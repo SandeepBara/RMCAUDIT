@@ -1,0 +1,1559 @@
+<?= $this->include('layout_home/header');?>
+<style type="text/css">
+    .error {
+        color: red;
+    }
+</style>
+
+<?php $session = session(); ?>
+<!--CONTENT CONTAINER-->
+<div id="content-container" style="padding-top: 10px;">
+    <!--Page content-->
+    <div id="page-content">
+        <form id="form_saf_property" name="form_saf_property" method="post" action="<?=base_url('CitizenSaf/AddUpdate');?><?=(isset($param))?"/".$param:"";?>">
+            <?php
+            if(isset($validation)){
+            ?>
+            <div class="panel panel-bordered panel-dark">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-10 text-danger">
+                        <?php 
+                        $i=0;
+                        foreach ($validation as $errMsg) {
+                            $i++;
+                            echo $i.") ".$errMsg; echo ".<br />";
+                        }
+                        ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php
+            }
+            ?>
+            <div class="panel panel-bordered panel-dark">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Self Assessment Form</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <label class="col-md-3">Application No.</label>
+                        <div class="col-md-3 pad-btm">
+                            <?php
+                            if($flashToast=flashToast('saf_no_encrypted')){
+                                $saf_no_encrypted = $flashToast;
+                            } else if (isset($saf_no)) {
+                                $saf_no_encrypted = $saf_no;
+                            } else {
+                                $saf_no_encrypted = "";
+                            }
+                            if($saf_no_encrypted==""){
+                                echo "N/A";
+                            }else{
+                                echo $saf_no_encrypted;
+                            }
+                            ?>
+                            <input type="hidden" id="saf_no" name="saf_no" class="form-control" value="<?=$saf_no_encrypted;?>" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-md-3">Does the property being assessed has any previous Holding Number? <span class="text-danger">*</span></label>
+                        <div class="col-md-3 pad-btm">
+                            <?php if ($assessmentType=="") { ?>
+                                <input type="hidden" id="has_previous_holding_no" name="has_previous_holding_no" class="form-control" value="0" /> NO
+                            <?php } else { ?>
+                                <input type="hidden" id="has_previous_holding_no" name="has_previous_holding_no" class="form-control" value="1" /> YES
+                            <?php } ?>
+                        </div>
+                        <div class="<?=(isset($assessmentType))?($assessmentType=="")?"hidden":"":"";?>">
+                            <label class="col-md-3">Previous Holding No. <span class="text-danger">*</span></label>
+                            <div class="col-md-3 pad-btm">
+                                <input type="text" id="previous_holding_no" name="previous_holding_no" class="form-control" placeholder="Previous Holding No" value="<?=(isset($holding_no))?$holding_no:"";?>" onkeypress="return isAlphaNum(event);" readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="<?=(isset($assessmentType))?($assessmentType=="")?"hidden":"":"";?>">
+                        <div class="row">
+                            <label class="col-md-3">Is the Applicant tax payer for the mentioned holding? If owner(s) have been changed click No. <span class="text-danger">*</span></label>
+                            <div class="col-md-3 pad-btm">
+                                <?php if ($assessmentType=="") { ?>
+                                    <input type="hidden" id="is_owner_changed" name="is_owner_changed" class="form-control" value="" /> N/A
+                                <?php } else {?>
+                                    <?php if ($assessmentType=="Re-Assessment") { ?>
+                                        <input type="hidden" id="is_owner_changed" name="is_owner_changed" class="form-control" value="1" /> YES
+                                    <?php } else if ($assessmentType=="Mutation") { ?>
+                                        <input type="hidden" id="is_owner_changed" name="is_owner_changed" class="form-control" value="0" /> NO
+                                    <?php } ?>
+                                <?php }?>
+                            </div>
+                            <?php if ($assessmentType=="Mutation") { ?>
+                            <div id="is_owner_changed_tran_property_hide_show" class="hidden">
+                                <label class="col-md-3">Mode of transfer of property from previous Holding Owner <span class="text-danger">*</span></label>
+                                <div class="col-md-3 pad-btm">
+                                    <select id="transfer_mode_mstr_id" name="transfer_mode_mstr_id" class="form-control">
+                                        <option value="">== SELECT ==</option>
+                                        <?php
+                                        if(isset($transferModeList)){
+                                            foreach ($transferModeList as $transferMode) {
+                                        ?>
+                                        <option value="<?=$transferMode['id'];?>" <?=(isset($transfer_mode_mstr_id))?($transferMode['id']==$transfer_mode_mstr_id)?"selected":"":"";?>><?=$transferMode['transfer_mode'];?></option>
+                                        <?php
+                                            }
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-md-3">Ward No <span class="text-danger">*</span></label>
+                        <div class="col-md-3 pad-btm">
+                            <select id="ward_mstr_id" name="ward_mstr_id" class="form-control">
+                                <option value="">== SELECT ==</option>
+                                <?php
+                                if(isset($wardList)){
+                                    foreach ($wardList as $ward) {
+                                ?>
+                                <option value="<?=$ward['id'];?>" <?=(isset($ward_mstr_id))?($ward['id']==$ward_mstr_id)?"selected":"":"";?>><?=$ward['ward_no'];?></option>
+                                <?php
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </div>
+						<input type="hidden" id="new_ward" name="new_ward" class="form-control" value="<?=$new_ward_mstr_id ;?>">
+                        <label class="col-md-3">New Ward No <span class="text-danger">*</span></label>
+                        <div class="col-md-3 pad-btm">
+                            <select id="new_ward_mstr_id" name="new_ward_mstr_id" class="form-control">
+                                <option value="">== SELECT ==</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-md-3">Ownership Type <span class="text-danger">*</span></label>
+                        <div class="col-md-3 pad-btm">
+                            <select id="ownership_type_mstr_id" name="ownership_type_mstr_id" class="form-control">
+                                <option value="">== SELECT ==</option>
+                                <?php
+                                if(isset($ownershipTypeList)){
+                                    foreach ($ownershipTypeList as $ownershipType) {
+                                ?>
+                                <option value="<?=$ownershipType['id'];?>" <?=(isset($ownership_type_mstr_id))?($ownershipType['id']==$ownership_type_mstr_id)?"selected":"":"";?>><?=$ownershipType['ownership_type'];?></option>
+                                <?php
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-md-3">Property Type <span class="text-danger">*</span></label>
+                        <div class="col-md-3 pad-btm">
+                            <select id="prop_type_mstr_id" name="prop_type_mstr_id" class="form-control" onchange="propTypeMstrChngFun();">
+                                <option value="">== SELECT ==</option>
+                                <?php
+                                if(isset($propTypeList)){
+                                    foreach ($propTypeList as $propType) {
+                                ?>
+                                <option value="<?=$propType['id'];?>" <?=(isset($prop_type_mstr_id))?($propType['id']==$prop_type_mstr_id)?"selected":"":"";?>><?=$propType['property_type'];?></option>
+                                <?php
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="appartment_name_hide_show" class="hidden">
+                        <div class="row">
+                            <label class="col-md-3">Appartment Name <span class="text-danger">*</span></label>
+                            <div class="col-md-3 pad-btm">
+                                <input type="text" id="appartment_name" name="appartment_name" class="form-control" placeholder="Appartment Name" value="<?=(isset($appartment_name))?$appartment_name:"";?>" onkeypress="return isAlphaNum(event);" />
+                            </div>
+                            <label class="col-md-3">Flat Registry Date <span class="text-danger">*</span></label>
+                            <div class="col-md-3 pad-btm">
+                                <input type="date" id="flat_registry_date" name="flat_registry_date" class="form-control" placeholder="Flat Registry Date" value="<?=(isset($flat_registry_date))?$flat_registry_date:"";?>" max="<?=date("Y-m-d");?>" />
+                            </div>
+                        </div>
+                    </div>
+                <?php
+                $db_name = $session->get('ulb_dtl');
+                if ($db_name['ulb_mstr_id']==1) {
+                ?>
+                    <div class="row">
+                        <label class="col-md-3">Zone <span class="text-danger">*</span></label>
+                        <div class="col-md-3">
+                            <select id="zone_mstr_id" name="zone_mstr_id" class="form-control">
+                                <option value="">== SELECT ==</option>
+                                <option value="1" <?=(isset($zone_mstr_id))?($zone_mstr_id=='1')?"selected":"":"";?>>Zone 1</option>
+                                <option value="2" <?=(isset($zone_mstr_id))?($zone_mstr_id=='2')?"selected":"":"";?>>Zone 2</option>
+                            </select>
+                        </div>
+						<div class="col-md-3">
+                            <p><b>Zone 1 : Over bridge to Saheed chowk.</b></p>
+							<p><b>Zone 2 : Rest area other than Zone1.</b></p>
+                        </div>
+                    </div>
+                <?php
+                } else {
+                ?>
+                    <input type="hidden" id="zone_mstr_id" name="zone_mstr_id" value="1" />
+                <?php
+                }
+                ?>
+                </div>
+            </div>
+            
+            <?php if ($assessmentType!="" && isset($prop_owner_dtl_list)) { ?>
+            <div class="panel panel-bordered panel-mint">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Previous Owner Details</h3>
+                </div>
+                <div class="panel-body" style="padding-bottom: 0px;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-sm">
+                                    <thead class="bg-trans-dark text-dark">
+                                        <tr>
+                                            <th>Owner Name</th>
+                                            <th>Guardian Name</th>
+                                            <th>Relation</th>
+                                            <th>Mobile No</th>
+                                            <th>Aadhar No.</th>
+                                            <th>PAN No.</th>
+                                            <th>Email ID</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <?php
+                                    if (isset($prop_owner_dtl_list)) {
+                                        foreach ($prop_owner_dtl_list as $key=>$prop_owner_dtl) {
+                                    ?>
+                                        <tr>
+                                            <td>
+                                                <?=$prop_owner_dtl['owner_name'];?>
+                                                <input type="hidden" id="prev_owner_name<?=$key+1;?>" name="prev_owner_name[]" class="prev_owner_name" value="<?=$prop_owner_dtl['owner_name'];?>" />
+                                            </td>
+                                            <td>
+                                                <?=$prop_owner_dtl['guardian_name'];?>
+                                                <input type="hidden" id="prev_guardian_name<?=$key+1;?>" name="prev_guardian_name[]" class="prev_guardian_name" value="<?=$prop_owner_dtl['guardian_name'];?>" />
+                                            </td>
+                                            <td>
+                                                <?=$prop_owner_dtl['relation_type'];?>
+                                                <input type="hidden" id="prev_relation_type<?=$key+1;?>" name="prev_relation_type[]" class="prev_relation_type" value="<?=$prop_owner_dtl['relation_type'];?>" />
+                                            </td>
+                                            <td>
+                                                <?=$prop_owner_dtl['mobile_no'];?>
+                                                <input type="hidden" id="prev_mobile_no<?=$key+1;?>" name="prev_mobile_no[]" class="prev_mobile_no" value="<?=$prop_owner_dtl['mobile_no'];?>" />
+                                            </td>
+                                            <td>
+                                                <?=$prop_owner_dtl['aadhar_no'];?>
+                                                <input type="hidden" id="prev_aadhar_no<?=$key+1;?>" name="prev_aadhar_no[]" class="prev_aadhar_no" value="<?=$prop_owner_dtl['aadhar_no'];?>" />
+                                            </td>
+                                            <td>
+                                                <?=$prop_owner_dtl['pan_no'];?>
+                                                <input type="hidden" id="prev_pan_no<?=$key+1;?>" name="prev_pan_no[]" class="prev_pan_no" value="<?=$prop_owner_dtl['pan_no'];?>" />
+                                            </td>
+                                            <td>
+                                                <?=$prop_owner_dtl['email'];?>
+                                                <input type="hidden" id="prev_email<?=$key+1;?>" name="prev_email[]" class="prev_email" value="<?=$prop_owner_dtl['email'];?>" />
+                                            </td>
+                                        </tr>
+                                    <?php
+                                        }
+                                    }
+                                    ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php } ?>
+            <div class="panel panel-bordered panel-dark <?=(isset($assessmentType))?($assessmentType!="Re-Assessment")?"":"hidden":"hidden";?>">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Owner Details</h3>
+                </div>
+                <div class="panel-body" style="padding-bottom: 0px;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-sm">
+                                    <thead class="bg-trans-dark text-dark">
+                                        <tr>
+                                            <th>Owner Name <span class="text-danger">*</span></th>
+                                            <th>Guardian Name</th>
+                                            <th>Relation</th>
+                                            <th>Mobile No <span class="text-danger">*</span></th>
+                                            <th>Aadhar No.<span class="text-danger">*</span></th>
+                                            <th>PAN No.</th>
+                                            <th>Email ID</th>
+                                            <th>Add/Remove</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="owner_dtl_append">
+                                <?php
+                                $zo = 1;
+                                if(isset($owner_name)){
+                                    $zo = sizeof($owner_name);
+                                    for($i=0; $i < $zo; $i++){
+                                ?>
+                                        <tr>
+                                            <td>
+                                                <input type="text" id="owner_name<?=$i+1;?>" name="owner_name[]" class="form-control owner_name" placeholder="Owner Name" value="<?=$owner_name[$i];?>" onkeypress="return isAlpha(event);" onkeyup="borderNormal(this.id);" />
+                                            </td>
+                                            <td>
+                                                <input type="text" id="guardian_name<?=$i+1;?>" name="guardian_name[]" class="form-control guardian_name" placeholder="Guardian Name" value="<?=$guardian_name[$i];?>" onkeypress="return isAlpha(event);" onkeyup="borderNormal(this.id);" />
+                                            </td>
+                                            <td>
+                                                <select id="relation_type<?=$i+1;?>" name="relation_type[]" class="form-control relation_type" style="width: 100px;" onchange="borderNormal(this.id);">
+                                                    <option value="">SELECT</option>
+                                                    <option value="S/O" <?=($relation_type[$i]=="S/O")?"selected":"";?>>S/O</option>
+                                                    <option value="D/O" <?=($relation_type[$i]=="D/O")?"selected":"";?>>D/O</option>
+                                                    <option value="W/O" <?=($relation_type[$i]=="W/O")?"selected":"";?>>W/O</option>
+                                                    <option value="C/O" <?=($relation_type[$i]=="C/O")?"selected":"";?>>C/O</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="text" id="mobile_no<?=$i+1;?>" name="mobile_no[]" class="form-control mobile_no" placeholder="Mobile No." value="<?=$mobile_no[$i];?>" onkeypress="return isNum(event);" onkeyup="borderNormal(this.id);" maxlength="10" />
+                                            </td>
+                                            <td>
+                                                <input type="text" id="aadhar_no<?=$i+1;?>" name="aadhar_no[]" class="form-control aadhar_no" placeholder="Aadhar No." value="<?=$aadhar_no[$i];?>" onkeypress="return isNum(event);" onkeyup="borderNormal(this.id);" maxlength="12" />
+                                            </td>
+                                            <td>
+                                                <input type="text" id="pan_no<?=$i+1;?>" name="pan_no[]" class="form-control pan_no" placeholder="PAN No." value="<?=$pan_no[$i];?>" onkeypress="return isAlphaNum(event);" onkeyup="borderNormal(this.id);" maxlength="10" />
+                                            </td>
+                                            <td>
+                                                <input type="email" id="email<?=$i+1;?>" name="email[]" class="form-control email" placeholder="Email ID" value="<?=$email[$i];?>" onkeyup="borderNormal(this.id);" />
+                                            </td>
+                                            <td class="text-2x">
+                                                <i class="fa fa-plus-square" style="cursor: pointer;" onclick="owner_dtl_append_fun();"></i>
+                                                &nbsp;
+                                            <?php if($i!=0){?>
+                                                <i class="fa fa-window-close remove_owner_dtl" style="cursor: pointer;"></i>
+                                            <?php } ?>
+                                            </td>
+                                        </tr>
+                                <?php
+                                    }
+                                }else{
+                                ?>
+                                        <tr>
+                                            <td>
+                                                <input type="text" id="owner_name1" name="owner_name[]" class="form-control owner_name" placeholder="Owner Name" value="" onkeypress="return isAlpha(event);" onkeyup="borderNormal(this.id);" />
+                                            </td>
+                                            <td>
+                                                <input type="text" id="guardian_name1" name="guardian_name[]" class="form-control guardian_name" placeholder="Guardian Name" value="" onkeypress="return isAlpha(event);" onkeyup="borderNormal(this.id);" />
+                                            </td>
+                                            <td>
+                                                <select id="relation_type1" name="relation_type[]" class="form-control relation_type" style="width: 100px;" onchange="borderNormal(this.id);">
+                                                    <option value="">SELECT</option>
+                                                    <option value="S/O">S/O</option>
+                                                    <option value="D/O">D/O</option>
+                                                    <option value="W/O">W/O</option>
+                                                    <option value="C/O">C/O</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="text" id="mobile_no1" name="mobile_no[]" class="form-control mobile_no" placeholder="Mobile No." value="" onkeypress="return isNum(event);" onkeyup="borderNormal(this.id);" maxlength="10" />
+                                            </td>
+                                            <td>
+                                                <input type="text" id="aadhar_no1" name="aadhar_no[]" class="form-control aadhar_no" placeholder="Aadhar No." value="" onkeypress="return isNum(event);" onkeyup="borderNormal(this.id);" maxlength="12" />
+                                            </td>
+                                            <td>
+                                                <input type="text" id="pan_no1" name="pan_no[]" class="form-control pan_no" placeholder="PAN No." value="" onkeypress="return isAlphaNum(event);" onkeyup="borderNormal(this.id);" maxlength="10" />
+                                            </td>
+                                            <td>
+                                                <input type="email" id="email1" name="email[]" class="form-control email" placeholder="Email ID" value="" onkeyup="borderNormal(this.id);" />
+                                            </td>
+                                            <td class="text-2x">
+                                                <i class="fa fa-plus-square" style="cursor: pointer;" onclick="owner_dtl_append_fun();"></i>
+                                                &nbsp;
+                                            </td>
+                                        </tr>
+                                <?php
+                                }
+                                ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-bordered panel-dark">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Electricity Details</h3>
+                </div>
+                <div class="panel-body" style="padding-bottom: 0px;">
+                    <div id="no_electric_connection_hide_show" class="hidden">
+                        <div class="row">
+                            <div class="col-md-12 pad-btm">
+                                <div class="checkbox">
+                                    <input id="no_electric_connection" name="no_electric_connection" class="magic-checkbox" type="checkbox" onclick="noElectConnCkFun();" <?=(isset($no_electric_connection))?($no_electric_connection==1)?"checked":"":"";?> value="1" >
+                                    <label for="no_electric_connection"><span class="text-danger">Note:</span> In case, there is no Electric Connection. You have to upload Affidavit Form-I. (Please Tick)</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="electric_dtl_hide_show" class="hidden">
+                        <div class="row">
+                            <label class="col-md-3">Electricity K. No <span class="text-danger">*</span></label>
+                            <div class="col-md-3 pad-btm">
+                                <input type="text" id="elect_consumer_no" name="elect_consumer_no" class="form-control" placeholder="Electricity K. No" value="<?=(isset($elect_consumer_no))?$elect_consumer_no:"";?>" onkeypress="return isAlphaNum(event);" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-12 pad-btm text-center text-bold"><u>OR</u></label>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-3">ACC No. <span class="text-danger">*</span></label>
+                            <div class="col-md-3 pad-btm">
+                                <input type="text" id="elect_acc_no" name="elect_acc_no" class="form-control" placeholder="ACC No." value="<?=(isset($elect_acc_no))?$elect_acc_no:"";?>" onkeypress="return isAlphaNum(event);" />
+                            </div>
+                            <label class="col-md-3">BIND/BOOK No. <span class="text-danger">*</span></label>
+                            <div class="col-md-3 pad-btm">
+                                <input type="text" id="elect_bind_book_no" name="elect_bind_book_no" class="form-control" placeholder="BIND/BOOK No." value="<?=(isset($elect_bind_book_no))?$elect_bind_book_no:"";?>" onkeypress="return isAlphaNum(event);" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-3">Electricity Consumer Category <span class="text-danger">*</span></label>
+                            <div class="col-md-3 pad-btm">
+                                <select id="elec_cons_category" name="elec_cons_category" class="form-control">
+                                    <option value="">== SELECT ==</option>
+                                    <option value="DS I/II/III" <?=(isset($elec_cons_category))?($elec_cons_category=='DS I/II/III')?"selected":"":"";?>>DS I/II/III</option>
+                                    <option value="NDS II/III" <?=(isset($elec_cons_category))?($elec_cons_category=='NDS II/III')?"selected":"":"";?>>NDS II/III</option>
+                                    <option value="IS I/II" <?=(isset($elec_cons_category))?($elec_cons_category=='IS I/II')?"selected":"":"";?>>IS I/II</option>
+                                    <option value="LTS" <?=(isset($elec_cons_category))?($elec_cons_category=='LTS')?"selected":"":"";?>>LTS</option>
+                                    <option value="HTS" <?=(isset($elec_cons_category))?($elec_cons_category=='HTS')?"selected":"":"";?>>HTS</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-bordered panel-dark">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Building Plan/Water Connection Details</h3>
+                </div>
+                <div class="panel-body" style="padding-bottom: 0px;">
+                    <div class="row">
+                        <label class="col-md-3">Building Plan Approval No. </label>
+                        <div class="col-md-3 pad-btm">
+                            <input type="text" id="building_plan_approval_no" name="building_plan_approval_no" class="form-control" placeholder="Building Plan Approval No." value="<?=(isset($building_plan_approval_no))?$building_plan_approval_no:"";?>" onkeypress="return isAlphaNum(event);" />
+                        </div>
+                        <label class="col-md-3">Building Plan Approval Date </label>
+                        <div class="col-md-3 pad-btm">
+                            <input type="date" id="building_plan_approval_date" name="building_plan_approval_date" class="form-control" value="<?=(isset($building_plan_approval_date))?$building_plan_approval_date:"";?>" max="<?=date("Y-m-d");?>" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-md-3">Water Consumer No. </label>
+                        <div class="col-md-3 pad-btm">
+                            <input type="text" id="water_conn_no" name="water_conn_no" class="form-control" placeholder="Water Consumer No." value="<?=(isset($water_conn_no))?$water_conn_no:"";?>" onkeypress="return isAlphaNum(event);" />
+                        </div>
+                        <label class="col-md-3">Water Connection Date </label>
+                        <div class="col-md-3 pad-btm">
+                            <input type="date" id="water_conn_date" name="water_conn_date" class="form-control" value="<?=(isset($water_conn_date))?$water_conn_date:"";?>" max="<?=date("Y-m-d");?>" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-bordered panel-dark">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Property Details</h3>
+                </div>
+                <div class="panel-body" style="padding-bottom: 0px;">
+                    <div class="row">
+                        <label class="col-md-3">Khata No. <span class="text-danger">*</span></label>
+                        <div class="col-md-3 pad-btm">
+                            <input type="text" id="khata_no" name="khata_no" class="form-control" placeholder="Khata No." value="<?=(isset($khata_no))?$khata_no:"";?>" onkeypress="return isAlphaNum(event);" />
+                        </div>
+                        <label class="col-md-3">Plot No. <span class="text-danger">*</span></label>
+                        <div class="col-md-3 pad-btm">
+                            <input type="text" id="plot_no" name="plot_no" class="form-control" placeholder="Plot No." value="<?=(isset($plot_no))?$plot_no:"";?>" onkeypress="return isAlphaNum(event);" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-md-3">Village/Mauja Name <span class="text-danger">*</span></label>
+                        <div class="col-md-3 pad-btm">
+                            <input type="text" id="village_mauja_name" name="village_mauja_name" class="form-control" placeholder="Village/Mauja Name" value="<?=(isset($village_mauja_name))?$village_mauja_name:"";?>" onkeypress="return isAlphaNum(event);" />
+                        </div>
+                        <label class="col-md-3">Area of Plot <span class="text-bold">(in Decimal)</span> <span class="text-danger">*</span></label>
+                        <div class="col-md-3 pad-btm">
+                            <input type="text" id="area_of_plot" name="area_of_plot" class="form-control" placeholder="Area of Plot" value="<?=(isset($area_of_plot))?$area_of_plot:"";?>" onkeypress="return isNumDot(event);" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-md-3">Road Type <span class="text-danger">*</span></label>
+                        <div class="col-md-3 pad-btm">
+                            <select id="road_type_mstr_id" name="road_type_mstr_id" class="form-control">
+                                <option value="">== SELECT ==</option>
+                                <?php
+                                if(isset($roadTypeList)){
+                                    foreach ($roadTypeList as $roadType) {
+                                ?>
+                                <option value="<?=$roadType['id'];?>" <?=(isset($road_type_mstr_id))?($roadType['id']==$road_type_mstr_id)?"selected":"":"";?>><?=$roadType['road_type'];?></option>
+                                <?php
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-bordered panel-dark">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Property Address</h3>
+                </div>
+                <div class="panel-body" style="padding-bottom: 0px;">
+                    <div class="row">
+                        <label class="col-md-3">Property Address <span class="text-danger">*</span></label>
+                        <div class="col-md-7 pad-btm">
+                            <textarea id="prop_address" name="prop_address" class="form-control" placeholder="Property Address" onkeypress="return isAlphaNumCommaSlash(event);"><?=(isset($prop_address))?$prop_address:"";?></textarea>
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        <label class="col-md-3">City <span class="text-danger">*</span></label>
+                        <div class="col-md-3 pad-btm">
+                            <input type="text" id="prop_city" name="prop_city" class="form-control" placeholder="City" value="<?=(isset($ulb_address))?$ulb_address['city']:"";?>" onkeypress="return isAlpha(event);" readonly />
+                        </div>
+                        <label class="col-md-3">District <span class="text-danger">*</span></label>
+                        <div class="col-md-3 pad-btm">
+                            <input type="text" id="prop_dist" name="prop_dist" class="form-control" placeholder="District" value="<?=(isset($ulb_address))?$ulb_address['district']:"";?>" onkeypress="return isAlpha(event);" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-md-3">State <span class="text-danger">*</span></label>
+                        <div class="col-md-3 pad-btm">
+                            <input type="text" id="prop_state" name="prop_state" class="form-control" placeholder="State" value="<?=(isset($ulb_address))?$ulb_address['state']:"";?>" onkeypress="return isAlpha(event);" readonly />
+                        </div>
+                        <label class="col-md-3">Pin <span class="text-danger">*</span></label>
+                        <div class="col-md-3 pad-btm">
+                            <input type="text" id="prop_pin_code" name="prop_pin_code" class="form-control" placeholder="Pin" value="<?=(isset($prop_pin_code))?$prop_pin_code:"";?>" onkeypress="return isNum(event);" maxlength="6" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-md-5">
+                            <div class="checkbox">
+                                <input id="is_corr_add_differ" name="is_corr_add_differ" class="magic-checkbox" type="checkbox" onclick="diffAddressCkFun();" <?=(isset($is_corr_add_differ))?($is_corr_add_differ==1)?"checked":"":"";?> value="1" >
+                                <label for="is_corr_add_differ">If Corresponding Address Different from Property Address</label>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-bordered panel-dark hidden" id="corr_address_hide_show">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Correspondence Address</h3>
+                </div>
+                <div class="panel-body" style="padding-bottom: 0px;">
+                    <div class="row">
+                        <label class="col-md-3">Correspondence Address <span class="text-danger">*</span></label>
+                        <div class="col-md-7 pad-btm">
+                            <textarea id="corr_address" name="corr_address" class="form-control" placeholder="Property Address" onkeypress="return isAlphaNumCommaSlash(event);"><?=(isset($corr_address))?$corr_address:"";?></textarea>
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        <label class="col-md-3">City <span class="text-danger">*</span></label>
+                        <div class="col-md-3 pad-btm">
+                            <input type="text" id="corr_city" name="corr_city" class="form-control" placeholder="City" value="<?=(isset($corr_city))?$corr_city:"";?>" onkeypress="return isAlpha(event);" />
+                        </div>
+                        <label class="col-md-3">District <span class="text-danger">*</span></label>
+                        <div class="col-md-3 pad-btm">
+                            <input type="text" id="corr_dist" name="corr_dist" class="form-control" placeholder="District" value="<?=(isset($corr_dist))?$corr_dist:"";?>" onkeypress="return isAlpha(event);" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-md-3">State <span class="text-danger">*</span></label>
+                        <div class="col-md-3 pad-btm">
+                            <input type="text" id="corr_state" name="corr_state" class="form-control" placeholder="State" value="<?=(isset($corr_state))?$corr_state:"";?>" onkeypress="return isAlpha(event);" />
+                        </div>
+                        <label class="col-md-3">Pin <span class="text-danger">*</span></label>
+                        <div class="col-md-3 pad-btm">
+                            <input type="text" id="corr_pin_code" name="corr_pin_code" class="form-control" placeholder="Pin" value="<?=(isset($corr_pin_code))?$corr_pin_code:"";?>" onkeypress="return isNum(event);" maxlength="6" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="floor_dtl_hide_show" class="hidden">
+                <div class="panel panel-bordered panel-dark">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Floor Details</h3>
+                    </div>
+                    <div class="panel-body" style="padding-bottom: 0px;">
+                        <div class="row">
+                            <div class="col-md-12 pad-btm">
+                                <span class="text-bold text-dark">Built Up :</span>
+                                <span class="text-thin">It refers to the entire carpet area along with the thickness of the external walls of the apartment. It includes the thickness of the internal walls and the columns.</span>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered text-sm">
+                                        <thead class="bg-trans-dark text-dark">
+                                            <tr>
+                                                <th>Floor No <span class="text-danger">*</span></th>
+                                                <th>Use Type <span class="text-danger">*</span></th>
+                                                <th>Occupancy Type <span class="text-danger">*</span></th>
+                                                <th>Construction Type <span class="text-danger">*</span></th>
+                                                <th>Built Up Area  (in Sq. Ft) <span class="text-danger">*</span></th>
+                                                <th>From Date <span class="text-danger">*</span> <br />(YYYY-MM)</th>
+                                                <th>Upto Date <span class="text-xs">(Leave blank for current date)</span> <br />(YYYY-MM)</th>
+                                                <th>Add/Remove</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="floor_dtl_append">
+                                    <?php
+                                    $zf = 1;
+                                    if(isset($floor_mstr_id)){
+                                        $zf = sizeof($floor_mstr_id);
+                                        for($i=0; $i < $zf; $i++){
+                                    ?>
+                                            <tr>
+                                                <td>
+                                                    <select id="floor_mstr_id<?=$i+1;?>" name="floor_mstr_id[]" class="form-control floor_mstr_id" style="width: 100px;" onchange="borderNormal(this.id);">
+                                                        <option value="">SELECT</option>
+                                                        <?php
+                                                        if(isset($floorList)){
+                                                            foreach ($floorList as $floor) {
+                                                        ?>
+                                                        <option value="<?=$floor['id'];?>" <?=($floor['id']==$floor_mstr_id[$i])?"selected":"";?>><?=$floor['floor_name'];?></option>
+                                                        <?php
+                                                            }
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select id="usage_type_mstr_id<?=$i+1;?>" name="usage_type_mstr_id[]" class="form-control usage_type_mstr_id" style="width: 200px;" onchange="borderNormal(this.id);">
+                                                        <option value="">SELECT</option>
+                                                        <?php
+                                                        if(isset($usageTypeList)){
+                                                            foreach ($usageTypeList as $usageType) {
+                                                        ?>
+                                                        <option value="<?=$usageType['id'];?>" <?=($usageType['id']==$usage_type_mstr_id[$i])?"selected":"";?>><?=$usageType['usage_type'];?></option>
+                                                        <?php
+                                                            }
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select id="occupancy_type_mstr_id<?=$i+1;?>" name="occupancy_type_mstr_id[]" class="form-control occupancy_type_mstr_id" style="width: 100px;" onchange="borderNormal(this.id);">
+                                                        <option value="">SELECT</option>
+                                                        <?php
+                                                        if(isset($occupancyTypeList)){
+                                                            foreach ($occupancyTypeList as $occupancyType) {
+                                                        ?>
+                                                        <option value="<?=$occupancyType['id'];?>" <?=($occupancyType['id']==$occupancy_type_mstr_id[$i])?"selected":"";?>><?=$occupancyType['occupancy_name'];?></option>
+                                                        <?php
+                                                            }
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select id="const_type_mstr_id<?=$i+1;?>" name="const_type_mstr_id[]" class="form-control const_type_mstr_id" style="width: 100px;" onchange="borderNormal(this.id);">
+                                                        <option value="">SELECT</option>
+                                                        <?php
+                                                        if(isset($constTypeList)){
+                                                            foreach ($constTypeList as $constType) {
+                                                        ?>
+                                                        <option value="<?=$constType['id'];?>" <?=($constType['id']==$const_type_mstr_id[$i])?"selected":"";?>><?=$constType['construction_type'];?></option>
+                                                        <?php
+                                                            }
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="builtup_area<?=$i+1;?>" name="builtup_area[]" class="form-control builtup_area" placeholder="Built Up Area" value="<?=$builtup_area[$i];?>" style="width: 100px;" onkeypress="return isNumDot(event);" onkeyup="borderNormal(this.id);" />
+                                                </td>
+                                                <td>
+                                                    <input type="month" id="date_from<?=$i+1;?>" name="date_from[]" class="form-control date_from" value="<?=$date_from[$i];?>" max="<?=date('Y-m')?>" style="width: 175px;" max="<?=date("Y-m-d");?>" onchange="borderNormal(this.id);" />
+                                                </td>
+                                                <td>
+                                                    <input type="month" id="date_upto<?=$i+1;?>" name="date_upto[]" class="form-control date_upto" value="<?=$date_upto[$i];?>" max="<?=date('Y-m')?>" style="width: 175px;" max="<?=date("Y-m-d");?>" onchange="borderNormal(this.id);" />
+                                                </td>
+                                                <td class="text-2x">
+                                                    <i class="fa fa-plus-square" style="cursor: pointer;" onclick="floor_dtl_append_fun();"></i>
+                                                    &nbsp;
+                                                <?php if($i!=0){ ?>
+                                                    <i class="fa fa-window-close remove_floor_dtl" style="cursor: pointer;"></i>
+                                                <?php } ?>
+                                                </td>
+                                            </tr>
+                                    <?php
+                                        }
+                                    }else{
+                                    ?>
+                                            <tr>
+                                                <td>
+                                                    <select id="floor_mstr_id1" name="floor_mstr_id[]" class="form-control floor_mstr_id" style="width: 100px;" onchange="borderNormal(this.id);">
+                                                        <option value="">SELECT</option>
+                                                        <?php
+                                                        if(isset($floorList)){
+                                                            foreach ($floorList as $floor) {
+                                                        ?>
+                                                        <option value="<?=$floor['id'];?>"><?=$floor['floor_name'];?></option>
+                                                        <?php
+                                                            }
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select id="usage_type_mstr_id1" name="usage_type_mstr_id[]" class="form-control usage_type_mstr_id" style="width: 200px;" onchange="borderNormal(this.id);">
+                                                        <option value="">SELECT</option>
+                                                        <?php
+                                                        if(isset($usageTypeList)){
+                                                            foreach ($usageTypeList as $usageType) {
+                                                        ?>
+                                                        <option value="<?=$usageType['id'];?>"><?=$usageType['usage_type'];?></option>
+                                                        <?php
+                                                            }
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select id="occupancy_type_mstr_id1" name="occupancy_type_mstr_id[]" class="form-control occupancy_type_mstr_id" style="width: 100px;" onchange="borderNormal(this.id);">
+                                                        <option value="">SELECT</option>
+                                                        <?php
+                                                        if(isset($occupancyTypeList)){
+                                                            foreach ($occupancyTypeList as $occupancyType) {
+                                                        ?>
+                                                        <option value="<?=$occupancyType['id'];?>"><?=$occupancyType['occupancy_name'];?></option>
+                                                        <?php
+                                                            }
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select id="const_type_mstr_id1" name="const_type_mstr_id[]" class="form-control const_type_mstr_id" style="width: 100px;" onchange="borderNormal(this.id);">
+                                                        <option value="">SELECT</option>
+                                                        <?php
+                                                        if(isset($constTypeList)){
+                                                            foreach ($constTypeList as $constType) {
+                                                        ?>
+                                                        <option value="<?=$constType['id'];?>"><?=$constType['construction_type'];?></option>
+                                                        <?php
+                                                            }
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="builtup_area1" name="builtup_area[]" class="form-control builtup_area" placeholder="Built Up Area" value="" style="width: 100px;" onkeypress="return isNumDot(event);" onkeyup="borderNormal(this.id);" />
+                                                </td>
+                                                <td>
+                                                    <input type="month" id="date_from1" name="date_from[]" class="form-control date_from" value="" max="<?=date('Y-m')?>" style="width: 175px;" max="<?=date("Y-m-d");?>" onchange="borderNormal(this.id);" />
+                                                </td>
+                                                <td>
+                                                    <input type="month" id="date_upto1" name="date_upto[]" class="form-control date_upto" value="" max="<?=date('Y-m')?>" style="width: 175px;" max="<?=date("Y-m-d");?>" onchange="borderNormal(this.id);" />
+                                                </td>
+                                                <td class="text-2x">
+                                                    <i class="fa fa-plus-square" style="cursor: pointer;" onclick="floor_dtl_append_fun();"></i>
+                                                </td>
+                                            </tr>
+                                    <?php
+                                    }
+                                    ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-bordered panel-dark">
+                <div class="panel-body" style="padding-bottom: 0px;">
+                    <div class="row">
+                        <label class="col-md-3">Does Property Have Mobile Tower(s) ? <span class="text-danger">*</span></label>
+                        <div class="col-md-3 pad-btm">
+                            <select class="form-control" id="is_mobile_tower" name="is_mobile_tower" onchange="is_mobile_tower_fun();">
+                                <option value="">SELECT</option>
+                                <option value="1" <?=(isset($is_mobile_tower))?($is_mobile_tower=="1")?"selected":"":"";?>>YES</option>
+                                <option value="0" <?=(isset($is_mobile_tower))?($is_mobile_tower=="0")?"selected":"":"";?>>NO</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="hidden" id="is_mobile_tower_hide_show">
+                        <div class="row">
+                            <label class="col-md-3">Total Area Covered by Mobile Tower & its
+Supporting Equipments & Accessories (in Sq. Ft.) <span class="text-danger">*</span></label>
+                            <div class="col-md-3">
+                                <input type="text" id="tower_area" name="tower_area" class="form-control" placeholder="Area" value="<?=(isset($tower_area))?$tower_area:"";?>" onkeypress="return isNumDot(event);" />
+                            </div>
+                            <label class="col-md-3">Date of Installation of Mobile Tower <span class="text-danger">*</span></label>
+                            <div class="col-md-3 ">
+                                <input type="date" id="tower_installation_date" name="tower_installation_date" class="form-control" value="<?=(isset($tower_installation_date))?$tower_installation_date:"";?>" max="<?=date("Y-m-d");?>" />
+                            </div>
+                        </div>
+                        <hr />
+                    </div>
+
+                    <div class="row">
+                        <label class="col-md-3">Does Property Have Hoarding Board(s) ? <span class="text-danger">*</span></label>
+                        <div class="col-md-3 pad-btm">
+                            <select id="is_hoarding_board" name="is_hoarding_board" class="form-control" onchange="is_hoarding_board_fun();">
+                                <option value="">SELECT</option>
+                                <option value="1" <?=(isset($is_hoarding_board))?($is_hoarding_board=="1")?"selected":"":"";?>>YES</option>
+                                <option value="0" <?=(isset($is_hoarding_board))?($is_hoarding_board=="0")?"selected":"":"";?>>NO</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="hidden" id="is_hoarding_board_hide_show">
+                        <div class="row">
+                            <label class="col-md-3">Total Area of Wall / Roof / Land (in Sq. Ft.) <span class="text-danger">*</span></label>
+                            <div class="col-md-3">
+                                <input type="text" id="hoarding_area" name="hoarding_area" class="form-control" placeholder="Area" value="<?=(isset($hoarding_area))?$hoarding_area:"";?>" onkeypress="return isNumDot(event);" />
+                            </div>
+                            <label class="col-md-3">Date of Installation of Hoarding Board(s) <span class="text-danger">*</span></label>
+                            <div class="col-md-3">
+                                <input type="date" id="hoarding_installation_date" name="hoarding_installation_date" class="form-control" value="<?=(isset($hoarding_installation_date))?$hoarding_installation_date:"";?>" max="<?=date("Y-m-d");?>" />
+                            </div>
+                        </div>
+                        <hr />
+                    </div>
+                    <div class="hidden" id="petrol_pump_dtl_hide_show">
+                        <div class="row">
+                            <label class="col-md-3">Is property a Petrol Pump ? <span class="text-danger">*</span></label>
+                            <div class="col-md-3 pad-btm">
+                                <select id="is_petrol_pump" name="is_petrol_pump" class="form-control" onchange="is_petrol_pump_fun();">
+                                    <option value="">SELECT</option>
+                                    <option value="1" <?=(isset($is_petrol_pump))?($is_petrol_pump=="1")?"selected":"":"";?>>YES</option>
+                                    <option value="0" <?=(isset($is_petrol_pump))?($is_petrol_pump=="0")?"selected":"":"";?>>NO</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="hidden" id="is_petrol_pump_hide_show">
+                            <div class="row">
+                                <label class="col-md-3">    
+    Underground Storage Area (in Sq. Ft.) <span class="text-danger">*</span></label>
+                                <div class="col-md-3">
+                                    <input type="text" id="under_ground_area" name="under_ground_area" class="form-control" placeholder="Area" value="<?=(isset($under_ground_area))?$under_ground_area:"";?>" onkeypress="return isNumDot(event);" />
+                                </div>
+                                <label class="col-md-3">Completion Date of Petrol Pump <span class="text-danger">*</span></label>
+                                <div class="col-md-3">
+                                    <input type="date" id="petrol_pump_completion_date" name="petrol_pump_completion_date" class="form-control" value="<?=(isset($petrol_pump_completion_date))?$petrol_pump_completion_date:"";?>" max="<?=date("Y-m-d");?>" />
+                                </div>
+                            </div>
+                            <hr />
+                        </div>
+                    </div>
+                    
+                    <div class="hidden" id="is_water_harvesting_hide_show">    
+                        <div class="row">
+                            <label class="col-md-3">Rainwater harvesting provision ? <span class="text-danger">*</span></label>
+                            <div class="col-md-3 pad-btm">
+                                <select id="is_water_harvesting" name="is_water_harvesting" class="form-control">
+                                    <option value="">SELECT</option>
+                                    <option value="1" <?=(isset($is_water_harvesting))?($is_water_harvesting=="1")?"selected":"":"";?>>YES</option>
+                                    <option value="0" <?=(isset($is_water_harvesting))?($is_water_harvesting=="0")?"selected":"":"";?>>NO</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hidden" id="vacant_land_occupation_date_hide_show">
+                        <div class="row">
+                            <label class="col-md-3">Date of Possession / Purchase / Acquisition (Whichever is earlier) <span class="text-danger">*</span></label>
+                            <div class="col-md-3">
+                                <input type="date" id="land_occupation_date" name="land_occupation_date" class="form-control" value="<?=(isset($land_occupation_date))?$land_occupation_date:"";?>" />
+                            </div>
+                        </div>
+                        <hr />
+                    </div>
+
+                </div>
+            </div>
+            <div class="panel panel-bordered panel-dark">
+                <div class="panel-body demo-nifty-btn text-center">
+                    <button type="SUBMIT" id="btn_review" name="btn_review" class="btn btn-primary">SUBMIT</button>
+                </div>
+            </div>
+        </form>
+    </div><!--End page content-->
+</div><!--END CONTENT CONTAINER-->
+<?= $this->include('layout_home/footer');?>
+<script src="<?=base_url();?>/public/assets/js/jquery.validate.js"></script>
+<script type="text/javascript">
+	$(window).on('load', function() {
+		var new_ward_mstr_id = $("#new_ward").val();
+		var old_ward_mstr_id = $("#ward_mstr_id").val();
+		if(old_ward_mstr_id!=""){
+			try{
+				$.ajax({
+					type:"POST",
+					url: "<?=base_url('CitizenSaf/getNewWardDtlByOldWard');?>",
+					dataType: "json",
+					data: {
+						"old_ward_mstr_id":old_ward_mstr_id,
+						"new_ward_mstr_id":new_ward_mstr_id,
+					},
+					beforeSend: function() {
+						$("#loadingDiv").show();
+					},
+					success:function(data){
+						if(data.response==true){
+							$("#new_ward_mstr_id").html(data.data)
+						}
+						$("#loadingDiv").hide();
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						$("#loadingDiv").hide();
+						alert(JSON.stringify(jqXHR));
+						console.log(JSON.stringify(jqXHR));
+						console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+					}
+				});
+			}catch (err) {
+				alert(err.message);
+			}
+		}
+		
+	});
+</script>
+<script type="text/javascript">
+    function modelInfo(msg){
+        $.niftyNoty({
+            type: 'info',
+            icon : 'pli-exclamation icon-2x',
+            message : msg,
+            container : 'floating',
+            timer : 5000
+        });
+    }
+	
+    $("#ward_mstr_id").change(function() {
+        var old_ward_mstr_id = $("#ward_mstr_id").val();
+        if(old_ward_mstr_id!=""){
+            try{
+                $.ajax({
+                    type:"POST",
+                    url: "<?=base_url('CitizenSaf/getNewWardDtlByOldWard');?>",
+                    dataType: "json",
+                    data: {
+                        "old_ward_mstr_id":old_ward_mstr_id,
+                    },
+                    beforeSend: function() {
+                        $("#loadingDiv").show();
+                    },
+                    success:function(data){
+                        if(data.response==true){
+                            $("#new_ward_mstr_id").html(data.data)
+                        }
+                        $("#loadingDiv").hide();
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        $("#loadingDiv").hide();
+                        alert(JSON.stringify(jqXHR));
+                        console.log(JSON.stringify(jqXHR));
+                        console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+                    }
+                });
+            }catch (err) {
+                alert(err.message);
+            }
+        }
+    });
+    function propTypeMstrChngFun(){
+        var prop_type_mstr_id = $("#prop_type_mstr_id").val();
+        if(prop_type_mstr_id==""){
+            $("#floor_dtl_hide_show").addClass("hidden");
+        }else{
+            if(prop_type_mstr_id==2){
+                $("#no_electric_connection_hide_show").removeClass("hidden");
+            }else{
+                $("#no_electric_connection").prop( "checked", false);
+                $("#electric_dtl_hide_show").removeClass("hidden");
+                $("#no_electric_connection_hide_show").addClass("hidden");
+            }
+            if(prop_type_mstr_id==3){
+                $("#appartment_name_hide_show").removeClass("hidden");
+            }else{
+                $("#appartment_name_hide_show").addClass("hidden");
+            }
+            if(prop_type_mstr_id==4){
+                $("#floor_dtl_hide_show").addClass("hidden"); 
+                $("#petrol_pump_dtl_hide_show").addClass("hidden");
+                $("#is_water_harvesting_hide_show").addClass("hidden");
+                $("#vacant_land_occupation_date_hide_show").removeClass("hidden");
+            }else if(prop_type_mstr_id==3){
+                $("#petrol_pump_dtl_hide_show").addClass("hidden");
+				 $("#is_water_harvesting_hide_show").removeClass("hidden");
+				 $("#floor_dtl_hide_show").removeClass("hidden");
+            }else{
+                $("#floor_dtl_hide_show").removeClass("hidden");
+                $("#petrol_pump_dtl_hide_show").removeClass("hidden");
+                $("#is_water_harvesting_hide_show").removeClass("hidden");
+                $("#vacant_land_occupation_date_hide_show").addClass("hidden");
+            }
+        }
+    }
+    var zo = <?=$zo;?>;
+    function owner_dtl_append_fun(){
+        zo++;
+        var appendData = '<tr><td><input type="text" id="owner_name'+zo+'" name="owner_name[]" class="form-control owner_name" placeholder="Owner Name" value="" onkeypress="return isAlpha(event);" onkeyup="borderNormal(this.id);" /></td><td><input type="text" id="guardian_name'+zo+'" name="guardian_name[]" class="form-control guardian_name" placeholder="Guardian Name" value="" onkeypress="return isAlpha(event);" onkeyup="borderNormal(this.id);" /></td><td><select id="relation_type'+zo+'" name="relation_type[]" class="form-control relation_type" style="width: 100px;"><option value="">SELECT</option><option value="S/O">S/O</option><option value="D/O">D/O</option><option value="W/O">W/O</option><option value="C/O">C/O</option></select></td><td><input type="text" id="mobile_no'+zo+'" name="mobile_no[]" class="form-control mobile_no" placeholder="Mobile No." value="" onkeypress="return isNum(event);" onkeyup="borderNormal(this.id);" maxlength="10" /></td><td><input type="text" id="aadhar_no'+zo+'" name="aadhar_no[]" class="form-control aadhar_no" placeholder="Aadhar No." value="" onkeypress="return isNum(event);" onkeyup="borderNormal(this.id);" maxlength="12" /></td><td><input type="text" id="pan_no'+zo+'" name="pan_no[]" class="form-control pan_no" placeholder="PAN No." value="" onkeypress="return isAlphaNum(event);" onkeyup="borderNormal(this.id);" maxlength="10" /></td><td><input type="email" id="email'+zo+'" name="email[]" class="form-control email" placeholder="Email ID" value="" onkeyup="borderNormal(this.id);" /></td></td><td class="text-2x"><i class="fa fa-plus-square" style="cursor: pointer;" onclick="owner_dtl_append_fun();"></i> &nbsp; <i class="fa fa-window-close remove_owner_dtl" style="cursor: pointer;"></i></td></tr>';
+        $("#owner_dtl_append").append(appendData);
+    }
+    $("#owner_dtl_append").on('click', '.remove_owner_dtl', function(e) {
+        $(this).closest("tr").remove();
+    });
+    function noElectConnCkFun(){
+        try{
+            if($("#no_electric_connection").prop("checked") == true){
+                $("#electric_dtl_hide_show").addClass("hidden");
+            }else{
+                $("#electric_dtl_hide_show").removeClass("hidden");
+            }
+        } catch (err) {
+            alert(err.message);
+        }
+    }
+    function diffAddressCkFun(){
+        try{
+            if($("#is_corr_add_differ").prop("checked") == true){
+                $("#corr_address_hide_show").removeClass("hidden");
+            }else{
+                $("#corr_address_hide_show").addClass("hidden");
+            }
+        } catch (err) {
+            alert(err.message);
+        }
+    }
+    var zf=<?=$zf;?>;
+    function floor_dtl_append_fun(){
+        zf++;
+        var appendData = '<tr><td><select id="floor_mstr_id'+zf+'" name="floor_mstr_id[]" class="form-control floor_mstr_id" style="width: 100px;" onchange="borderNormal(this.id);"><option value="">SELECT</option><?php if(isset($floorList)){ foreach ($floorList as $floor) { ?><option value="<?=$floor['id'];?>"><?=$floor['floor_name'];?></option><?php }} ?></select></td><td><select id="usage_type_mstr_id'+zf+'" name="usage_type_mstr_id[]" class="form-control usage_type_mstr_id" style="width: 200px;" onchange="borderNormal(this.id);"><option value="">SELECT</option><?php if(isset($usageTypeList)){ foreach ($usageTypeList as $usageType) { ?><option value="<?=$usageType['id'];?>"><?=$usageType['usage_type'];?></option><?php }} ?></select></td><td><select id="occupancy_type_mstr_id'+zf+'" name="occupancy_type_mstr_id[]" class="form-control occupancy_type_mstr_id" style="width: 100px;" onchange="borderNormal(this.id);"><option value="">SELECT</option><?php if(isset($occupancyTypeList)){ foreach ($occupancyTypeList as $occupancyType) {?><option value="<?=$occupancyType['id'];?>"><?=$occupancyType['occupancy_name'];?></option><?php }} ?></select></td><td><select id="const_type_mstr_id'+zf+'" name="const_type_mstr_id[]" class="form-control const_type_mstr_id" style="width: 100px;" onchange="borderNormal(this.id);"><option value="">SELECT</option><?php if(isset($constTypeList)){ foreach ($constTypeList as $constType) { ?><option value="<?=$constType['id'];?>"><?=$constType['construction_type'];?></option><?php }} ?></select></td><td><input type="text" id="builtup_area'+zf+'" name="builtup_area[]" class="form-control builtup_area" placeholder="Built Up Area" value="" style="width: 100px;" onkeypress="return isNumDot(event);" onkeyup="borderNormal(this.id);" /></td><td><input type="month" id="date_from'+zf+'" name="date_from[]" class="form-control date_from" value="" max="<?=date('Y-m')?>" style="width: 175px;" onchange="borderNormal(this.id);" /></td><td><input type="month" id="date_upto'+zf+'" name="date_upto[]" class="form-control date_upto" value="" max="<?=date('Y-m')?>" style="width: 175px;" onchange="borderNormal(this.id);" /></td><td class="text-2x"><i class="fa fa-plus-square" style="cursor: pointer;" onclick="floor_dtl_append_fun();"></i>  &nbsp; <i class="fa fa-window-close remove_floor_dtl" style="cursor: pointer;"></i></td></tr>';
+        $("#floor_dtl_append").append(appendData);
+    }
+    $("#floor_dtl_append").on('click', '.remove_floor_dtl', function(e) {
+        $(this).closest("tr").remove();
+    });
+    function is_mobile_tower_fun(){
+        if($("#is_mobile_tower").val()=='1'){
+            $("#is_mobile_tower_hide_show").removeClass("hidden");
+        }else{
+            $("#is_mobile_tower_hide_show").addClass("hidden");
+        }
+    }
+    function is_hoarding_board_fun(){
+        if($("#is_hoarding_board").val()=='1'){
+            $("#is_hoarding_board_hide_show").removeClass("hidden");
+        }else{
+            $("#is_hoarding_board_hide_show").addClass("hidden");
+        }
+    }
+    function is_petrol_pump_fun(){
+        if($("#is_petrol_pump").val()=='1'){
+            $("#is_petrol_pump_hide_show").removeClass("hidden");
+        }else{
+            $("#is_petrol_pump_hide_show").addClass("hidden");
+        }
+    }
+
+    noElectConnCkFun();
+    diffAddressCkFun();
+    propTypeMstrChngFun();
+    is_mobile_tower_fun();
+    is_hoarding_board_fun();
+    is_petrol_pump_fun();
+
+    function isEmail(emailVal) {
+        var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        if (!regex.test(emailVal) ) {
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    function isAlpha(e){
+        var keyCode = (e.which) ? e.which : e.keyCode
+        if ((keyCode < 65 || keyCode > 90) && (keyCode < 97 || keyCode > 123) && keyCode != 32)
+            return false;
+
+        return true;
+    }
+
+    function isNum(e){
+        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+            return false;
+        }
+    }
+
+    function isNumDot(e){
+        var charCode = (e.which) ? e.which : e.keyCode;
+        if(charCode==46){
+            var txt = e.target.value;
+            if ((txt.indexOf(".") > -1) || txt.length==0) {
+                return false;
+            }
+        }else{
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                return false;
+            }
+        }
+    }
+
+    function isNumComma(key) {
+                var keycode = (key.which) ? key.which : key.keyCode;
+                if (!(keycode == 8 || keycode == 46) && (keycode < 48 || keycode > 57)) {
+                    return false;
+                }else {
+                    var parts = key.srcElement.value.split('.');
+                    if (parts.length > 1 && keycode == 46)
+                        return false;
+                    return true;
+                }
+    }
+
+    function isAlphaNum(e){
+        var keyCode = (e.which) ? e.which : e.keyCode
+        if ((keyCode < 65 || keyCode > 90) && (keyCode < 97 || keyCode > 123) && keyCode != 32 && (e.which < 48 || e.which > 57))
+            return false;
+    }
+
+    function isAlphaNumCommaSlash(e){
+        var keyCode = (e.which) ? e.which : e.keyCode
+        if (e.which != 44 && e.which != 47 && e.which != 92 && (keyCode < 65 || keyCode > 90) && (keyCode < 97 || keyCode > 123) && keyCode != 32 && (e.which < 48 || e.which > 57))
+            return false;
+    }
+
+    function isDateFormatYYYMMDD(value){
+        var regex = /^([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))+$/;
+        if (!regex.test(value) ) {
+            return false;
+        }else{
+            return true;
+        }
+    }
+    function isAlphaCheck(val){
+        var alpha = /^[a-zA-Z-,]+(\s{0,1}[a-zA-Z-, ])*$/;
+        if (!val.match(alpha)) return false;
+        return true;
+    }
+    function isNumCheck(val){
+        var numbers = /^[-+]?[0-9]+$/;
+        if (!val.match(numbers)) return false;
+        return true;
+    }
+    function isAlphaNumCheck(val){
+        var regex = /^[a-z0-9]+$/i;
+        if (!val.match(regex)) return false;
+        return true;
+    }
+    function isAlphaNumCommaSlashCheck(val){
+        var regex = /^[a-z\d\\/,\s]+$/i;
+        if (!val.match(regex)) return false;
+        return true;
+    }
+    function isNumDotCheck(val){
+        var regex = /^[1-9]\d*(((,\d{3}){1})?(\.\d{1,8})?)$/;
+        if (!val.match(regex)) return false;
+        return true;
+    }
+    function isDateFormatYYYMMDDCheck(val){
+        var regex = /^([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))+$/;
+        if (!regex.test(val) ) {
+            return false;
+        }else{
+            return true;
+        }
+    }
+    function isDateFormatYYYMMCheck(val){
+        var regex = /^\d{4}-\d{2}$/;
+        if (!regex.test(val) ) {
+            return false;
+        }else{
+            var YYMM = val.split("-");
+            if(YYMM[0]>2020) {
+                return false
+            } else if(YYMM[1]>12) {
+                return false
+            }
+            return true;
+        }
+    }
+    
+function borderNormal(ID) {
+    $("#"+ID).css('border-color', '');
+}
+$(document).ready(function() {
+
+    
+
+    jQuery.validator.addMethod("dateFormatYYYMMDD", function(value, element) {
+        return this.optional(element) || /^([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))+$/i.test(value);
+    }, "Invalid format (YYYY-MM-DD)"); 
+
+    jQuery.validator.addMethod("dateFormatYYYMM", function(value, element) {
+        return this.optional(element) || /^([12]\d{3}-(0[1-9]|1[0-2]))+$/i.test(value);
+    }, "Invalid format (YYYY-MM)"); 
+
+    jQuery.validator.addMethod("alphaSpace", function(value, element) {
+        return this.optional(element) || /^[a-zA-Z ]+$/i.test(value);
+    }, "Letters only please (a-z, A-Z )");
+
+    jQuery.validator.addMethod("alphaNumhyphen", function(value, element) {
+        return this.optional(element) || /^[a-zA-Z0-9- ]+$/i.test(value);
+    }, "Letters only please (a-z, A-Z, 0-9, -)"); 
+
+    jQuery.validator.addMethod("numDot", function(value, element) {
+        return this.optional(element) || /^\d+(?:\.\d+)+$/i.test(value);
+    }, "Letters only please (0-9.)"); 
+
+    jQuery.validator.addMethod('min_greater_zero', function (value, element) {
+        return value > 0;
+    }, "Please enter a value greater than 0");
+
+    /* jQuery.validator.addMethod('checkUptoDateDependOnFromDate', function (value, element) {
+        return value > 0;
+    }, "Please enter a value greater than 0"); */
+
+    $('#btn_review').click(function(){
+        var process = true;   
+        $(".guardian_name").each(function() {
+            var ID = this.id.split('guardian_name')[1];
+            var guardian_name = $("#guardian_name"+ID).val();
+            var relation_type = $("#relation_type"+ID).val();
+			var aadhar_no = $("#aadhar_no"+ID).val();
+			var elect_consumer_no = $("#elect_consumer_no").val();
+			var elect_acc_no = $("#elect_acc_no").val();
+			var elect_bind_book_no = $("#elect_bind_book_no").val();
+			var elec_cons_category = $("#elec_cons_category").val();
+			if (elect_consumer_no!="") {
+                if (elect_acc_no!="" || elect_bind_book_no!="" || elec_cons_category!="") {
+                    $("#elect_acc_no").css('border-color', 'red'); process = false;
+					$("#elect_bind_book_no").css('border-color', 'red'); process = false;
+					$("#elec_cons_category").css('border-color', 'red'); process = false;
+                }
+            }
+			if (elect_acc_no!="" || elect_bind_book_no!="" || elec_cons_category!="") {
+                if (elect_consumer_no!="") {
+                    $("#elect_consumer_no").css('border-color', 'red'); process = false;
+                }
+            }
+			if (elect_consumer_no=="") {
+                if (elect_acc_no=="" || elect_bind_book_no=="" || elec_cons_category=="") {
+                    $("#elect_acc_no").css('border-color', 'red'); process = false;
+					$("#elect_bind_book_no").css('border-color', 'red'); process = false;
+					$("#elec_cons_category").css('border-color', 'red'); process = false;
+                }
+            }
+			if (elect_acc_no=="" || elect_bind_book_no=="" || elec_cons_category=="") {
+                if (elect_consumer_no=="") {
+                    $("#elect_consumer_no").css('border-color', 'red'); process = false;
+                }
+            }
+            if (guardian_name!="") {
+                if (relation_type=="") {
+                    $("#relation_type"+ID).css('border-color', 'red'); process = false;
+                }
+            }
+			if (guardian_name=="") {
+				$("#guardian_name"+ID).css('border-color', 'red'); process = false;
+			}
+			if (relation_type=="") {
+				$("#relation_type"+ID).css('border-color', 'red'); process = false;
+			}
+            if (relation_type!="") {
+                if (guardian_name=="") {
+                    $("#guardian_name"+ID).css('border-color', 'red'); process = false;
+                }
+            }
+			if (aadhar_no=="") {
+				$("#aadhar_no"+ID).css('border-color', 'red'); process = false;
+			}
+        });
+		
+		if ($("#prop_type_mstr_id").val()==3 ) {
+			var prop_typeid = $('#prop_type_mstr_id').val();
+			var usg_type = 0;
+			var flr_type = 0;
+			$(".usage_type_mstr_id").each(function() {
+				var ID = this.id.split('usage_type_mstr_id')[1];
+				var usage_type_mst = $("#usage_type_mstr_id"+ID).val();
+				var floor_mst = $("#floor_mstr_id"+ID).val();
+				var builtup_ar = $("#builtup_area"+ID).val();
+				if(prop_typeid ==3 && usage_type_mst==1)
+				{
+					usg_type = usage_type_mst;
+				}
+				if(prop_typeid ==3 && floor_mst==1)
+				{
+					flr_type = floor_mst;
+					if((builtup_ar!=200 || usage_type_mst!=13) && usg_type==1)
+					{
+						alert("Parking only with Use Type OTHERS and 200 Built Up Area (in Sq. Ft).");
+						$("#builtup_area"+ID).css('border-color', 'red'); process = false;
+						$("#usage_type_mstr_id"+ID).css('border-color', 'red'); process = false;
+					}
+				}
+			});
+			if(usg_type ==1 && flr_type==0)
+			{
+				alert("Please also add parking with 200 Built Up Area (in Sq. Ft).");
+				process = false;
+			}
+		}
+		
+        if ($("#prop_type_mstr_id").val()!=4 ) {
+            $(".floor_mstr_id").each(function() {
+                var ID = this.id.split('floor_mstr_id')[1];
+                var date_from = $("#date_from"+ID).val();
+                var date_upto = $("#date_upto"+ID).val();
+				
+                if (date_upto!="") {
+                    var com_date_from = new Date(date_from+"-01");
+                    var com_date_upto = new Date(date_upto+"-01");
+
+                    if ( !isDateFormatYYYMMDD(date_upto+"-01") ){
+                        $("#date_upto"+ID).css('border-color', 'red'); process = false;
+                    } else if (com_date_from.getTime() >= com_date_upto.getTime()) {
+                        $("#date_upto"+ID).css('border-color', 'red'); process = false;
+                    }
+                }
+
+            });
+        }
+        return process;
+    });
+
+    $("#form_saf_property").validate({
+        rules: {
+            "has_previous_holding_no": {
+                required: true,                
+            },
+            "previous_holding_no": {
+                required: function(element){
+                    return $("#has_previous_holding_no").val()==1;
+                },                
+            },
+            "is_owner_changed": {
+                required: function(element){
+                    return $("#has_previous_holding_no").val()==1;
+                },                
+            },
+            "transfer_mode_mstr_id": {
+                required: function(element){
+                    return ($("#has_previous_holding_no").val()==1 && $("#is_owner_changed").val()==1);
+                },
+            },
+            "ward_mstr_id": {
+                required: true,                
+            },
+            "ownership_type_mstr_id": {
+                required: true,                
+            },
+            "prop_type_mstr_id": {
+                required: true,                
+            },
+            "appartment_name": {
+                required: function(element){
+                    return $("#prop_type_mstr_id").val()==3;
+                }
+            },
+            "flat_registry_date": {
+                required: function(element){
+                    return $("#prop_type_mstr_id").val()==3;
+                },
+                dateFormatYYYMMDD: function(element){
+                    return ($("#prop_type_mstr_id").val()==3 && $("#flat_registry_date").val()!="");
+                }
+            },
+            "zone_mstr_id": {
+                required: true,                
+            },
+            "owner_name[]": {
+                required: true,
+                alphaSpace: true,
+                minlength: 2,
+            },
+            "mobile_no[]": {
+                required: true,
+                digits: true,
+                minlength: 10,
+                maxlength: 10,
+            },
+            
+            "khata_no": {
+                required: true,                
+            },
+            "plot_no": {
+                required: true,                
+            },
+            "village_mauja_name": {
+                required: true,                
+            },
+            "road_type_mstr_id": {
+                required: true,                
+            },
+            "area_of_plot": {
+                required: true,
+                number: true,
+                min_greater_zero: true,
+                maxlength: 8,
+            },
+            "prop_address": {
+                required: true,
+                alphaNumhyphen: true,
+            },
+            "prop_pin_code": {
+                required: true,
+                digits: true,
+                min_greater_zero: true,
+                minlength: 6,
+                maxlength: 6,
+            },
+            "corr_address": {
+                required: true,
+                alphaNumhyphen: true,
+            },
+            "corr_city": {
+                required: function(element){
+                    return $('#is_corr_add_differ').prop("checked");
+                },
+                alphaSpace: true,
+            },
+            "corr_dist": {
+                required: function(element){
+                    return $('#is_corr_add_differ').prop("checked");
+                },
+                alphaSpace: true,
+            },
+            "corr_state": {
+                required: function(element){
+                    return $('#is_corr_add_differ').prop("checked");
+                },
+                alphaSpace: true,
+            },
+            "corr_pin_code": {
+                required: function(element){
+                    return $('#is_corr_add_differ').prop("checked");
+                },
+                digits: true,
+                min_greater_zero: true,
+                minlength: 6,
+                maxlength: 6,
+            },
+            "floor_mstr_id[]": {
+                required: function(element){
+                    return $("#prop_type_mstr_id").val()!=4;
+                }
+            },
+            "usage_type_mstr_id[]": {
+                required: function(element){
+                    return $("#prop_type_mstr_id").val()!=4;
+                }
+            },
+            "occupancy_type_mstr_id[]": {
+                required: function(element){
+                    return $("#prop_type_mstr_id").val()!=4;
+                }
+            },
+            "const_type_mstr_id[]": {
+                required: function(element){
+                    return $("#prop_type_mstr_id").val()!=4;
+                }
+            },
+            "builtup_area[]": {
+                required: function(element){
+                    return $("#prop_type_mstr_id").val()!=4;
+                },
+                number: true,
+                min_greater_zero: true,
+                maxlength: 8,
+            },
+            "date_from[]": {
+                required: function(element){
+                    return $("#prop_type_mstr_id").val()!=4;
+                },
+                dateFormatYYYMM: function(element){
+                    return $("#prop_type_mstr_id").val()!=4;
+                },
+            },
+            "date_upto[]": {
+                dateFormatYYYMM : true
+            },
+            "is_mobile_tower": {
+                required: true
+            },
+            "tower_area": {
+                required: function(element){
+                    return $("#is_mobile_tower").val()==1;
+                },
+                number: true,
+                min_greater_zero: true,
+                maxlength: 8,
+            },
+            "tower_installation_date": {
+                required: function(element){
+                    return $("#is_mobile_tower").val()==1;
+                },
+                dateFormatYYYMMDD : true
+            },
+            "is_hoarding_board": {
+                required: true
+            },
+            "hoarding_area": {
+                required: function(element){
+                    return $("#is_hoarding_board").val()==1;
+                },
+                number: true,
+                min_greater_zero: true,
+                maxlength: 8,
+            },
+            "hoarding_installation_date": {
+                required: function(element){
+                    return $("#is_hoarding_board").val()==1;
+                },
+                dateFormatYYYMMDD : true
+            },
+            "is_petrol_pump": {
+                required: function(element){
+                    return ($("#prop_type_mstr_id").val()!=4 && $("#prop_type_mstr_id").val()!=3);
+                }
+            },
+            "under_ground_area": {
+                required: function(element){
+                    return ($("#prop_type_mstr_id").val()!=4 && $("#is_petrol_pump").val()==1);
+                },
+                number: true,
+                min_greater_zero: true,
+                maxlength: 8,
+            },
+            "petrol_pump_completion_date": {
+                required: function(element){
+                    return ($("#prop_type_mstr_id").val()!=4 && $("#is_petrol_pump").val()==1);
+                },
+                dateFormatYYYMMDD : true
+            },
+            "is_water_harvesting": {
+                required: function(element){
+                    return $("#prop_type_mstr_id").val()!=4;
+                }
+            },
+            "land_occupation_date": {
+                required: function(element){
+                    return $("#prop_type_mstr_id").val()==4;
+                },
+                dateFormatYYYMMDD : true
+            },
+        }
+    });
+});
+</script>

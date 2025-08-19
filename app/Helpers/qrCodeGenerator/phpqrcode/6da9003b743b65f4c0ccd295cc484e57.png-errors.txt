@@ -1,0 +1,1 @@
+2020-09-03 15:47:37: imagepng(qrCodeGenerator/images/6da9003b743b65f4c0ccd295cc484e57.png): failed to open stream: No such file or directory2020-09-03 16:06:49: imagepng(qrCodeGenerator/images/6da9003b743b65f4c0ccd295cc484e57.png): failed to open stream: No such file or directory

@@ -1,0 +1,10 @@
+Property   :---  <?php echo base_url('Mobi/mobileMenu/property') ?>
+
+Water    :---   <?php echo base_url('Mobi/mobileMenu/water') ?>
+
+
+Visting Detail   :---     <?php echo base_url('TCVisiting/index') ?>
+
+
+
+Change Password   :---    <?php echo base_url('mobiChngPass/changePwd') ?>

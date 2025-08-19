@@ -1,0 +1,1163 @@
+<?=$this->include("layout_mobi/header");?>
+<?php 
+$session  = session(); 
+$user_type_mstr_id = $session->get("emp_details")["user_type_mstr_id"];
+?>
+<!--CONTENT CONTAINER-->
+<div id="content-container">
+    <!--Page content-->
+	<div id="page-content">
+		<form action="" id="FORMNAME1" name="FORMNAME1" method="post" enctype="multipart/form-data">
+		<div class="panel panel-bordered panel-dark">
+			<div class="panel-heading">
+				<h3 class="panel-title">Self Assessment - Field Survey</h3>
+			</div>
+			
+			<div class="panel-body">
+				<div class="row pad-btm">
+					<div class="col-md-12" style="text-align: center;">
+						<div class="col-md-4">
+							<span style="font-weight: bold; color: #bb4b0a;"> Your Application No. is :</span> &nbsp;&nbsp;&nbsp;<span style="color: #179a07;"><?=$saf_no?></span>
+						</div>
+						<div class="col-md-4">
+							<span style="font-weight: bold; color: #bb4b0a;">Application Type:   </span>&nbsp;&nbsp;&nbsp;<span style="color: #179a07;"><?=$Saf_detail["has_previous_holding_no"]=='f'? 'New Assessment':'Reassessment'?></span>
+						</div>
+						<div class="col-md-4">
+							<span style="font-weight: bold; color: #bb4b0a;">Applied Date :   </span>&nbsp;&nbsp;&nbsp;<span style="color: #179a07;"><?=$apply_date?></span>
+						</div>
+					</div>
+				</div>
+				
+				<div class="panel panel-bordered">
+					<div class="panel-heading" style="background:#1b8388f7;">
+						<h3 class="panel-title">Ward No</h3>
+					</div>
+					<div class="panel-body">	
+						<div class="row">
+							<div class="col-sm-12">
+							   Self-Assessed : <b><?php echo $ward_no;?></b>
+							</div>
+							<?php if($user_type_mstr_id==7){?>
+							<div class="col-sm-12">
+							   Assessed By Agency TC  : <b><?=$_POST["vhid_ward_id"];?></b>
+							</div>
+							<?php }?>
+							<div class="col-sm-12">
+							   Check : <b><?php echo $assess_ward_status;?></b>
+								<input type="hidden" name="rdo_ward_no"  value="<?=$_POST["rdo_ward_no"]?>">
+							</div>
+							<div class="col-sm-12">
+								Verification : <b><?php echo $assess_ward_no; ?></b>
+								<input type="hidden" name="ward_id" id="ward_id" value="<?=$assess_ward_id?>" />
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="panel panel-bordered">
+					<div class="panel-heading" style="background:#1b8388f7;">
+						<h3 class="panel-title">New Ward No</h3>
+					</div>
+					<div class="panel-body">	
+						<div class="row">
+							<div class="col-sm-12">
+							   Self-Assessed : <b><?php echo $new_ward_no;?></b>
+							</div>
+							<?php if($user_type_mstr_id==7){?>
+							<div class="col-sm-12">
+							   Assessed By Agency TC  : <b><?=$_POST["vhid_new_ward_id"];?></b>
+							</div>
+							<?php }?>
+							<div class="col-sm-12">
+							   Check : <b><?php echo $assess_new_ward_status;?></b>
+								<input type="hidden" name="rdo_new_ward_no"  value="<?=$_POST["rdo_new_ward_no"]?>">
+							</div>
+							<div class="col-sm-12">
+								Verification : <b><?php echo $assess_new_ward_no; ?></b>
+								<input type="hidden" name="new_ward_id" id="new_ward_id" value="<?=$assess_new_ward_id?>" />
+							</div>
+						</div>
+					</div>
+				</div>
+						
+				<div class="panel panel-bordered">
+					<div class="panel-heading" style="background:#1b8388f7;">
+						<h3 class="panel-title">Zone</h3>
+					</div>
+					<div class="panel-body">	
+						<div class="row">
+							<div class="col-sm-12">
+							   Self-Assessed : <b><?php echo $zone_id; ?></b>
+							</div>
+							<?php if($user_type_mstr_id==7){?>
+							<div class="col-sm-12">
+							   Assessed By Agency TC  : <b><?=$_POST["vhid_zone"];?></b>
+							</div>
+							<?php }?>
+							<div class="col-sm-12">
+							   Check : <b><?php echo $assess_zone_status;?></b>
+								<input type="hidden" name="rdo_zone"  value="<?=$_POST["rdo_zone"]?>">
+							</div>
+							<div class="col-sm-12">
+								Verification : <b><?php echo $assess_zone_id; ?></b>
+								<input type="hidden" name="zone" id="zone" value="<?=$assess_zone_id?>" />
+							</div>
+						</div>
+					</div>
+				</div>		
+				
+				<div class="panel panel-bordered">
+					<div class="panel-heading" style="background:#1b8388f7;">
+						<h3 class="panel-title">Property Type</h3>
+					</div>
+					<div class="panel-body">	
+						<div class="row">
+							<div class="col-sm-12">
+							   Self-Assessed : <b><?php echo $property_type; ?></b>
+							</div>
+							<?php if($user_type_mstr_id==7){?>
+							<div class="col-sm-12">
+							   Assessed By Agency TC  : <b><?=$_POST["hid_property_typev"];?></b>
+							</div>
+							<?php }?>
+							<div class="col-sm-12">
+								Check : <b><?php echo $assess_proptype_status;?></b>
+								<input type="hidden" name="rdo_property_type"  value="<?=$_POST["rdo_property_type"]?>">
+							</div>
+							<div class="col-sm-12">
+								Verification : <b><?php echo $assess_property_type; ?></b>
+								<input type="hidden" name="property_type_id"  value="<?=$assess_property_type_id;?>">
+							</div>
+						</div>
+					</div>
+				</div>
+                <?php 
+				if($assessment_type=="Mutation")
+				{
+					//print_var($_POST);
+					?>		
+				
+					<div class="panel panel-bordered">
+						<div class="panel-heading" style="background:#1b8388f7;">
+							<h3 class="panel-title">Percentage of Property Transfered</h3>
+								<input type="hidden" name="percentage_of_property" id="percentage_of_property" value="<?=$_POST["percentage_of_property"]?>"  />
+								
+						</div>
+						<div class="panel-body">
+							<?=$_POST["percentage_of_property"]?>
+						</div>
+					</div>
+					<?php 
+				}
+				?>
+                
+                <div class="panel panel-bordered">
+					<div class="panel-heading" style="background:#1b8388f7;">
+						<h3 class="panel-title">Area of Plot (in decimal)</h3>
+					</div>
+					<div class="panel-body">	
+						<div class="row">
+							<div class="col-sm-12">
+							   Self-Assessed : <b><?=$area_of_plot?></b>
+							</div>
+							<?php if($user_type_mstr_id==7){?>
+							<div class="col-sm-12">
+							   Assessed By Agency TC  : <b><?=$_POST["hid_area_of_plotv"];?></b>
+							</div>
+							<?php }?>
+							<div class="col-sm-12">
+								Check : <b><?php echo $assess_areaplot_status;?></b>
+								<input type="hidden" name="rdo_area_of_plot"  value="<?=$_POST["rdo_area_of_plot"]?>">
+							</div>
+							<div class="col-sm-12">
+								Verification : <b><?=$assess_area_of_plot?></b>
+								<input type="hidden" name="area_of_plot" id="area_of_plot" required value="<?=$assess_area_of_plot?>"  />
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="panel panel-bordered">
+					<div class="panel-heading" style="background:#1b8388f7;">
+						<h3 class="panel-title">Street Type</h3>
+					</div>
+					<div class="panel-body">	
+						<div class="row">
+							<div class="col-sm-12">
+							   Self-Assessed : <b><?=$road_type?></b>
+							</div>
+							<?php if($user_type_mstr_id==7){?>
+							<div class="col-sm-12">
+							   Assessed By Agency TC  : <b><?=$_POST["hid_street_typev"];?></b>
+							</div>
+							<?php }?>
+							<div class="col-sm-12">
+								Check : <b><?php echo $assess_roadtype_status;?></b>
+								<input type="hidden" name="rdo_street_type"  value="<?=$_POST["rdo_street_type"]?>"> 
+								
+							</div>
+							<div class="col-sm-12">
+								Verification : <b><?=$assess_road_type?></b>
+								<input type="hidden" name="street_type_id" id="street_type_id" value="<?=$assess_road_type_id?>" />
+							</div>
+						</div>
+					</div>
+				</div>
+
+                <?php 
+				if($property_type<>'VACANT LAND' && $assess_property_type_id!=4)
+				{
+					$i=1;
+					foreach ($floor_details as $floorinfo)
+					{
+						?>
+						<input type="hidden" name="floorid<?=$i?>" value="<?=$floorinfo["floor_mstr_id"];?>">
+						<input type="hidden" name="carpet_area<?=$i?>" value="<?=$floorinfo["carpet_area"];?>">
+						<input type="hidden" name="saf_floor_dtl_id<?=$i?>" value="<?=$floorinfo["id"];?>"> 
+						<!-- <input type="hidden" name="completion_date<?=$i?>" value="<?=$floorinfo["date_from"];?>">  -->
+						<input type="hidden" name="completiondate_upto<?=$i?>" value="<?=$floorinfo["date_upto"];?>"> 
+						
+						<div class="panel panel-bordered panel-dark">
+							<div class="panel-heading">
+								<h3 class="panel-title"><?=$floorinfo["floor_name"]?></h3>
+							</div>
+							<div class="panel-body">
+								<div class="panel panel-bordered">
+									<div class="panel-heading" style="background:#1b8388f7;">
+										<h3 class="panel-title">Usage Type - <?=$floorinfo["floor_name"]?></h3>
+									</div>
+									<div class="panel-body">	
+										<div class="row">
+											<div class="col-sm-12">
+											Self-Assessed : <b><?=$floorinfo['usage_type']?></b>
+											<input type="hidden" name="hid_total_floors" id="hid_total_floors" value="<?=$no_of_floor?>" />
+											</div>
+											<?php if($user_type_mstr_id==7){?>
+											<div class="col-sm-12">
+											Assessed By Agency TC : <b><?=$_POST["hid_use_type_idv_$i"];?></b>
+											</div>
+											<?php }?>
+											<div class="col-sm-12">
+												Check : <b><?php echo $floorinfo["assess_usage_type_status"];?></b>
+												<input type="hidden" name="rdo_usage_type<?=$i?>"  value="<?=$_POST["rdo_usage_type$i"]?>"> 
+											</div>
+											<div class="col-sm-12">
+												Verification : <b><input type="hidden" name="usagetypeid_<?=$i;?>"  id="usagetypeid_<?php echo $i;?>"  value="<?php echo $floorinfo["assess_usage_type_id"];?>"/> 
+												<?php echo $floorinfo["assess_usage_type"];?></b>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="panel panel-bordered">
+									<div class="panel-heading" style="background:#1b8388f7;">
+										<h3 class="panel-title">Occupancy Type - <?=$floorinfo["floor_name"]?></h3>
+									</div>
+									<div class="panel-body">	
+										<div class="row">
+											<div class="col-sm-12">
+											Self-Assessed : <b><?=$floorinfo['occupancy_name']?></b>
+											</div>
+											<?php if($user_type_mstr_id==7){?>
+											<div class="col-sm-12">
+											Assessed By Agency TC : <b><?=$_POST["hid_occupancy_type_idv_$i"];?></b>
+											</div>
+											<?php }?>
+											<div class="col-sm-12">
+												Check : <b><?php echo $floorinfo["assess_occupancy_type_status"];?></b>
+												<input type="hidden" name="rdo_occupancy_type<?=$i?>"  value="<?=$_POST["rdo_occupancy_type$i"]?>"> 
+											</div>
+											<div class="col-sm-12">
+												Verification : <b><input type="hidden" name="occupancytypeid_<?=$i?>"  id="occupancytypeid_<?=$i;?>"  value="<?php echo $floorinfo["assess_occupancy_type_id"];?>"/>  
+												<?php echo $floorinfo["assess_occupancy_type"];?></b>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="panel panel-bordered">
+									<div class="panel-heading" style="background:#1b8388f7;">
+										<h3 class="panel-title">Construction Type - <?=$floorinfo["floor_name"]?></h3>
+									</div>
+									<div class="panel-body">	
+										<div class="row">
+											<div class="col-sm-12">
+											Self-Assessed : <b><?=$floorinfo['construction_type']?></b>
+											<input type="hidden" id="hid_construction_type_id_<?=$i?>" value="<?=$floorinfo['const_type_mstr_id']?>" name="hid_construction_type_id_<?=$i?>" />
+											</div>
+											<?php if($user_type_mstr_id==7){?>
+											<div class="col-sm-12">
+											Assessed By Agency TC : <b><?=$_POST["hid_construction_type_idv_$i"];?></b>
+											</div>
+											<?php }?>
+											<div class="col-sm-12">
+												Check : <b><?php echo $floorinfo["assess_const_type_status"];?></b>
+												<input type="hidden" name="rdo_construction_type<?=$i?>"  value="<?=$_POST["rdo_construction_type$i"]?>"> 
+											</div>
+											<div class="col-sm-12">
+												Verification : <b><input type="hidden" id="consttypeid<?=$i?>" value="<?=$floorinfo["assess_const_type_id"]?>" name="consttypeid<?=$i?>" />  
+												<?=$floorinfo["assess_const_type"]?></b>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="panel panel-bordered">
+									<div class="panel-heading" style="background:#1b8388f7;">
+										<h3 class="panel-title">Builtup Area - <?=$floorinfo["floor_name"]?></h3>
+									</div>
+									<div class="panel-body">	
+										<div class="row">
+											<div class="col-sm-12">
+											Self-Assessed : <b><?=$floorinfo["builtup_area"]?></b>
+											<input type="hidden" id="hid_construction_type_id_<?=$i?>" value="<?=$floorinfo['const_type_mstr_id']?>" name="hid_construction_type_id_<?=$i?>" />
+											</div>
+											<?php if($user_type_mstr_id==7){?>
+											<div class="col-sm-12">
+											Assessed By Agency TC : <b><?=$_POST["hid_builtup_areav_$i"];?></b>
+											</div>
+											<?php }?>
+											<div class="col-sm-12">
+												Check : <b><?php echo $floorinfo["assess_builtup_area_status"];?></b>
+												<input type="hidden" name="rdo_builtup_area<?=$i?>"  value="<?=$_POST["rdo_builtup_area$i"]?>"> 
+											</div>
+											<div class="col-sm-12">
+												Verification : <b><?=$floorinfo["assess_builtup_area"]?>  </b>
+												<input type="hidden" id="builtuparea_<?=$i?>" name="builtuparea_<?=$i?>"  value="<?=$floorinfo["assess_builtup_area"]?>" />
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="panel panel-bordered">
+									<div class="panel-heading" style="background:#1b8388f7;">
+										<h3 class="panel-title">Date From - <?=$floorinfo["floor_name"]?></h3>
+									</div>
+									<div class="panel-body">	
+										<div class="row">
+											<div class="col-sm-12">
+											Self-Assessed : <b><?=date("Y-m", strtotime($floorinfo["date_from"]));?></b>
+											<input type="hidden" id="hid_completion_date_<?=$i?>" value="<?=$floorinfo['date_from']?>" name="hid_completion_date_<?=$i?>" />
+											</div>
+											<?php if($user_type_mstr_id==7){?>
+											<div class="col-sm-12">
+											Assessed By Agency TC : <b><?=$_POST["hid_completion_datev_$i"];?></b>
+											</div>
+											<?php }?>
+											<div class="col-sm-12">
+												Check : <b><?php echo $floorinfo["assess_completion_date_status"];?></b>
+												<input type="hidden" name="rdo_completion_date<?=$i?>"  value="<?=$_POST["rdo_completion_date$i"]?>"> 
+											</div>
+											<div class="col-sm-12">
+												Verification : <b><?=date("Y-m", strtotime($floorinfo["assess_completion_date"]))?>  </b>
+												<input type="hidden" id="completion_date<?=$i?>" name="completion_date<?=$i?>"  value="<?=date("Y-m", strtotime($floorinfo["assess_completion_date"]))?>" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<?php $i++;
+					}
+					?>
+					<input type="hidden" name="countdata" value="<?=$i?>" />
+					<?php
+				}
+				?>		   
+				<input type="hidden" name="chkfloor" id="chkfloor" value="<?=$chkfloor ?? NULL;?>" />
+				<?php 
+				if(isset($chkfloor) && $chkfloor=="on")
+				{
+					?>
+					<div class="panel" style="border:#00FF00 solid 1px;">
+						<div class="panel-heading" style="background:#00FF00; color:#FFFFFF; font-weight:bold; margin-bottom: 10px;">New Added Floor  Details</div>
+						<input type="hidden" value="<?=$countarea?>" name="countarea" id="countarea">
+						<?php  
+							$Arcnt=0;
+							$countarea=$countarea;	
+							foreach ($newfloor as $newvalue)
+							{
+								$Arcnt++;
+								?>
+								<div class="container-fluid">
+								<div class="panel panel-bordered panel-dark container-fluid">
+									<div class="panel-body">
+										<input type="hidden" name="floor_id[]" style="width: 80%" value="<?php echo $newvalue["floor_id"]?>"/>
+										<input type="hidden" name="use_type_id[]" value="<?=$newvalue["use_type_id"]?>" />
+										<input type="hidden" name="occupancy_type_id[]"  value="<?=$newvalue["occupancy_type_id"]?>" /> 
+										<input type="hidden" name="construction_type_id[]" value="<?=$newvalue["construction_type_id"]?>"/>
+										<input type="hidden" name="builtup_area[]"  value="<?=$newvalue["builtup_area"]?>"  />				 
+										<input type="hidden" name="occ_mm[]" id="occ_mm[]" value="<?=$newvalue["occ_mm"]?>"  />
+										<input type="hidden" name="occ_yyyy[]"   value="<?=$newvalue["occ_yyyy"]?>" />				 	
+										<input type="hidden" name="ncarpet_area[]"  value="<?=$newvalue["carpet_area"]?>"  />
+										<input type="hidden" name="completion_date[]" value="<?=$floorinfo["date_from"]??'';?>"> 
+										
+										<div class="p">
+											<div class="row">
+												<div class="col-sm-12">
+													Floor No : <b><?=$newvalue["floor_name"]?></b>
+												</div>
+												<div class="col-sm-12">
+													Use Type : <b><?=$newvalue["usage_type"]?></b>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-sm-12">
+													Occupancy Type : <b><?=$newvalue["occupancy_name"]?></b>
+												</div>
+												<div class="col-sm-12">
+													Construction Type : <b><?=$newvalue["construction_type"]?></b>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-sm-12">
+													Built Up Area : <b><?=$newvalue["builtup_area"]?></b>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-sm-12">
+													Date From : <b><?=$newvalue["occ_mm"];?></b>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								</div>
+								<?php 
+							}
+							?>
+					</div>
+					<?php 
+				}
+				?>
+				
+		
+		<div class="panel panel-bordered panel-dark">
+			<div class="panel-heading">
+				<h3 class="panel-title">Extra Details</h3>
+			</div>
+			<div class="panel-body">
+				<div class="panel panel-bordered">
+					<div class="panel-heading" style="background:#1b8388f7;">
+						<h3 class="panel-title">Hording Board(s)</h3>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-12">
+							   Self Assessed : Does Property Have Hoarding Board(s)? : <b><?=$assessed_has_hording?></b>
+							</div>
+							<?php if($assessed_has_hording=='Yes'){?>
+							<div class="col-sm-12">
+							   Installation Date of Hoarding Board(s) : <b><input type="hidden" id="assess_hording_installation_date" value="<?=$hoarding_installation_date?>" /> <?=$hoarding_installation_date?></b>
+							</div>
+							
+							<div class="col-sm-12">
+								Total  Area  (in Sq. Ft.) : <b><input type="hidden" id="assess_total_hording_area" value="<?=$hoarding_area?>" /> <?=$hoarding_area?></b>
+							</div>
+							<?php }?>
+							<?php if($user_type_mstr_id==7){?>
+							<div class="col-sm-12">
+								Assessed By Agency TC : <b><?=$_POST["hordv"]=='t'?'Yes':'No';?>  </b>
+							</div>
+							<?php }?>
+							<div class="col-sm-12">
+								Does Property Have Hoarding Board(s) : <b><?php  echo $assess_has_hording;?></b>
+								<input type="hidden"  name="has_hording" id="has_hording" value="<?=$assess_has_hording_status?>">
+							</div>
+							<?php if($assess_has_hording=='Yes'){?>
+							<div class="col-sm-12">
+								Installation Date of Hoarding Board(s) : <b><?=$_POST["hording_installation_date"]?></b>
+								<input type="hidden" name="hording_installation_date" id="hording_installation_date" value="<?=$assess_hoarding_installation_date?>"/> 
+							</div>
+							<div class="col-sm-12">
+								Total Floor Area of Roof / Land (in Sq. Ft.) :<b> <?=$_POST["total_hording_area"]?></b>
+								<input type="hidden" name="total_hording_area" id="total_hording_area"  value="<?=$assess_hoarding_area?>" />
+							</div>
+							<?php }?>
+						</div>
+					</div>
+				</div>
+				
+				<div class="panel panel-bordered">
+					<div class="panel-heading" style="background:#1b8388f7;">
+						<h3 class="panel-title">Mobile Tower</h3>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-12">
+							   Self Assessed : Does Property Have Mobile Tower? : <b><?=$assessed_has_mobile_tower?></b>
+							</div>
+							<?php if($assess_has_mobile_tower=='Yes'){?>
+							<div class="col-sm-12">
+							   Installation Date of Mobile Tower : <b><input type="hidden" id="assess_tower_installation_date" value="<?=$assess_mobile_tower_installation_date;?>"/><?=$assess_mobile_tower_installation_date;?></b>
+							</div>
+							<div class="col-sm-12">
+								Total  Area  (in Sq. Ft.) : <b><input type="hidden" id="assess_total_tower_area" value="<?=$assess_mobile_tower_area?>" /> <?=$assess_mobile_tower_area;?></b>
+							</div>
+							<?php }?>
+							<?php if($user_type_mstr_id==7){?>
+							<div class="col-sm-12">
+								Assessed By Agency TC : <b><?=$_POST["towerv"]=='t'?'Yes':'No';?></b>
+							</div>
+							<?php }?>
+							<div class="col-sm-12">
+								Does Property Have Mobile Tower : <b><?php echo $assess_has_mobile_tower;?></b>
+								<input type="hidden"  name="has_mobile_tower" id="has_mobile_tower" value="<?=$assess_has_mobile_tower_status?>">
+							</div>
+							<?php if($assess_has_mobile_tower=='Yes'){?>
+							<div class="col-sm-12 tw_details">
+								Installation Date of Mobile Tower : <b><?=$_POST["tower_installation_date"]?></b>
+								<input type="hidden" name="tower_installation_date" id="tower_installation_date" value="<?=$assess_mobile_tower_installation_date?>"/>
+							</div>
+							<div class="col-sm-12">
+								Total Floor Area of Roof / Land (in Sq. Ft.) :<b> <?=$_POST["total_tower_area"]?></b>
+								<input type="hidden" name="total_tower_area" id="total_tower_area"  value="<?=$assess_mobile_tower_area?>" />
+							</div>
+							<?php }?>
+						</div>
+					</div>
+				</div>
+				
+				<?php
+				if($property_type<>'VACANT LAND'  && $assess_property_type_id!=4 ||(isset($fieldVerificationmstr_detail['prop_type_mstr_id']) && $assess_property_type_id!=4))
+				{
+					?>
+					<div class="panel panel-bordered">
+						<div class="panel-heading" style="background:#1b8388f7;">
+							<h3 class="panel-title">Petrol Pump</h3>
+						</div>
+						
+						<div class="panel-body">
+							<div class="row">
+								<?php 
+								if($property_type=='INDEPENDENT BUILDING'){ ?>
+								<div class="col-sm-12">
+								Is property a Petrol Pump ? : <b><?=$assessed_is_petrol_pump?></b>
+								</div>
+								<?php if($assessed_is_petrol_pump=='Yes'){?>
+								<div class="col-sm-12">
+								Completion Date of Petrol Pump : <b><input type="hidden" id="assess_petrol_pump_completion_date" value="<?= isset($pinsdate)?$pinsdate:'' ?>" /><?= isset($pinsdate)?$pinsdate:'' ?></b>
+								</div>
+								<div class="col-sm-12">
+									Underground Storage Area (in Sq. Ft.) : <b><input type="hidden" id="assess_under_ground_area" value="<?= isset($built_up_area)?$built_up_area:'' ?>" /><?= isset($built_up_area)?$built_up_area:'' ?></b>
+								</div>
+								<?php }?>
+								<?php }?>
+								<?php if($user_type_mstr_id==7){?>
+								<div class="col-sm-12">
+									Assessed By Agency TC : <b><?=$_POST["petrolrv"]=='t'?'Yes':'No';?></b>
+								</div>
+								<?php }?>
+								<div class="col-sm-12">
+								Is property a Petrol Pump ? : <b><?=$assess_is_petrol_pump?></b>
+								<input type="hidden" name="is_petrol_pump" id="is_petrol_pump" value="<?=$assess_is_petrol_pump_status?>">
+								</div>
+								<?php if($assess_is_petrol_pump=='Yes'){?>
+								<div class="col-sm-12 pt_details">
+								Completion Date of Petrol Pump : <b><?=$assess_petrol_pump_installation_date?></b>
+								<input type="hidden" name="petrol_pump_completion_date" id="petrol_pump_completion_date" value="<?=$assess_petrol_pump_installation_date?>"  />
+								</div>
+								<div class="col-sm-12 pt_details">
+									Underground Storage Area (in Sq. Ft.) : <b><?=$assess_petrol_pump_area?></b>
+									<input type="hidden" name="under_ground_area" id="under_ground_area" value="<?=$assess_petrol_pump_area?>" />
+								</div>
+								<?php }?>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="panel panel-bordered">
+						<div class="panel-heading" style="background:#1b8388f7;">
+							<h3 class="panel-title">Rainwater Harvesting Provision</h3>
+						</div>
+						<div class="panel-body">
+							<div class="row">
+								<div class="col-sm-12">
+								Self-Assessed : <b><?php echo $assessed_water_harvesting;?></b>
+								</div>
+								<?php if($user_type_mstr_id==7){?>
+								<div class="col-sm-12">
+								Assessed By Agency TC : <b><?php if($_POST["rainwater_harvestv"]==0){echo 'No';}else{'Yes';}?></b>
+								</div>
+								<?php }?>
+								<input type="hidden" name="hid_water_harvesting" id="hid_water_harvesting" value="<?php echo $is_water_harvesting;?>" />
+								<div class="col-sm-12">
+									Check : <b><?php echo $assess_water_harvesting_select; ?></b>
+								</div>
+								<input type="hidden" name="rdo_water_harvesting"  value="<?=$assess_water_harvesting_status_select?>">
+								<div class="col-sm-12">
+									Verification : <b><?php echo $assess_water_harvesting; ?></b>
+								</div>
+								<input type="hidden" name="water_harvesting" id="water_harvesting" value="<?=$assess_water_harvesting_status?>"  >
+							</div>
+						</div>
+					</div>
+					<?php
+				}
+				?>
+				
+				
+			</div>
+		</div>
+		<div class="panel panel-bordered panel-dark">
+			<div class="panel-heading">
+				<h3 class="panel-title"><b>Remarks</b> &nbsp;&nbsp;</h3>
+				<input type="hidden" name="remarks" id="remarks" value="<?=isset($_POST["remarks"])?$_POST["remarks"]:"";?>"/>
+			</div>
+			<div class="panel-body">
+				<div class="row">			
+					<div class="col-sm-12">
+						<strong><?=isset($_POST["remarks"])?$_POST["remarks"]:"";?></strong>
+					</div>
+				</div>
+			</div>
+		</div>
+		<?php if ($assess_water_harvesting=="Yes" && $user_type_mstr_id==7) { ?>
+		<div class="panel panel-bordered panel-dark">
+			<div class="panel-heading">
+				<h3 class="panel-title"><b>Upload Water Harvesting Image</b> &nbsp;&nbsp;</h3>
+			</div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-md-4 col-xs-12 pad-btm">
+						<strong>Water Harvesting Image</strong>
+					</div>
+					<div class="col-xs-4 pad-btm">
+						<img name="water_harvesting_image_path_container" id="water_harvesting_image_path_container" src="<?=base_url();?>/public/assets/img/upload.png" style="width: 80px; height: 80px;" />
+					</div>
+					<div class="col-xs-4 pad-btm">
+						<span id="water_harvesting_image_path_latitude_span">Latitude: </span>
+						<span id="water_harvesting_image_path_longitude_span"><br>Longitude: </span>
+						<input type="hidden" name="water_harvesting_image_path_latitude_text" id="water_harvesting_image_path_latitude_text" />
+						<input type="hidden" name="water_harvesting_image_path_longitude_text" id="water_harvesting_image_path_longitude_text" />
+					</div>
+					<div class="col-md-4 col-xs-9 pad-btm">
+						<input type="file" id="water_harvesting_image_path" name="water_harvesting_image_path" class="form-control" direction_type="front view" accept="image/*" capture="camera"  style="width:250px;" onChange="readURL(this, '#water_harvesting_image_path_container')" />
+						<input type="hidden" class="form-control readonly" id="water_harvesting_image_path_text"  />
+					</div>
+				</div>
+			</div>
+		</div>
+        <?php } ?>
+        <?php  //&& (!($is_geo_tag_done??false))
+			if ($user_type_mstr_id==5 && (!($is_geo_tag_done??false))) { ?>
+                <div class="panel panel-bordered panel-dark">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Field Verification Upload</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <div class="panel panel-bordered">
+                                        <div class="panel-heading"  style="background:#1b8388f7;">
+                                            <h3 class="panel-title">Upload Image</h3>
+
+                                        </div>
+                                        <div class="panel-body">
+                                            <form class="form-horizontal" method="post" enctype="multipart/form-data">
+                                                <div class="form-group">
+
+                                                    <div class="row">
+                                                        <div class="col-md-4 col-xs-12 pad-btm" style="margin-left: 15px;">
+                                                            <strong> Front Image </strong>
+                                                        </div>
+                                                        <div class="col-xs-4 pad-btm" style="margin-left: 15px;">
+                                                            <img name="front_image_path_container" id="front_image_path_container" src="<?=base_url();?>/public/assets/img/upload.png" style="width: 80px; height: 80px;" />
+                                                        </div>
+                                                        <div class="col-xs-4 pad-btm" style="margin-left: 15px;">
+                                                            <span id="front_image_path_latitude_span">Latitude: </span>
+                                                            <span id="front_image_path_longitude_span"><br>Longitude: </span>
+                                                            <input type="hidden" name="front_image_path_latitude_text" id="front_image_path_latitude_text" />
+                                                            <input type="hidden" name="front_image_path_longitude_text" id="front_image_path_longitude_text" />
+                                                        </div>
+                                                        <div class="col-md-4 col-xs-9 pad-btm" style="width: 85%;">
+                                                            <input type="file" id="front_image_path" name="front_image_path" class="form-control" direction_type="front view" accept="image/*" capture="camera"  style="width:250px;" onChange="readURL1(this, '#front_image_path_container')" />
+                                                            <input type="text" class="form-control readonly" id="front_image_path_text"  />
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-4 col-xs-12 pad-btm" style="margin-left: 15px;">
+                                                            <strong> Left Image </strong>
+                                                        </div>
+                                                        <div class="col-xs-4 pad-btm" style="margin-left: 15px;">
+                                                            <img name="left_image_path_container" id="left_image_path_container" src="<?=base_url();?>/public/assets/img/upload.png" style="width: 80px; height: 80px;" />
+                                                        </div>
+                                                        <div class="col-xs-4 pad-btm" style="margin-left: 15px;">
+                                                            <span id="left_image_path_latitude_span">Latitude: </span>
+                                                            <span id="left_image_path_longitude_span"><br>Longitude: </span>
+                                                            <input type="hidden" name="left_image_path_latitude_text" id="left_image_path_latitude_text" />
+                                                            <input type="hidden" name="left_image_path_longitude_text" id="left_image_path_longitude_text" />
+                                                        </div>
+                                                        <div class="col-md-4 col-xs-9 pad-btm" style="width: 85%;">
+                                                            <input type="file" id="left_image_path" name="left_image_path" class="form-control" direction_type="left side" accept="image/*" capture="camera"  style="width:250px;" onChange="readURL1(this, '#left_image_path_container')" />
+                                                            <input type="text" class="form-control readonly" id="left_image_path_text"  />
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="row">
+                                                        <div class="col-md-4 col-xs-12 pad-btm" style="margin-left: 15px;">
+                                                            <strong> Right Image </strong>
+                                                        </div>
+                                                        <div class="col-xs-4 pad-btm" style="margin-left: 15px;">
+                                                            <img name="right_image_path_container" id="right_image_path_container" src="<?=base_url();?>/public/assets/img/upload.png" style="width: 80px; height: 80px;" />
+                                                        </div>
+                                                        <div class="col-xs-4 pad-btm" style="margin-left: 15px;">
+                                                            <span id="right_image_path_latitude_span">Latitude: </span>
+                                                            <span id="right_image_path_longitude_span"><br>Longitude: </span>
+                                                            <input type="hidden" name="right_image_path_latitude_text" id="right_image_path_latitude_text" />
+                                                            <input type="hidden" name="right_image_path_longitude_text" id="right_image_path_longitude_text" />
+                                                        </div>
+                                                        <div class="col-md-4 col-xs-9 pad-btm" style="width: 85%;">
+                                                            <input type="file" id="right_image_path" name="right_image_path" class="form-control" direction_type="right side" accept="image/*" capture="camera"  style="width:250px;" onChange="readURL1(this, '#right_image_path_container')" />
+                                                            <input type="text" class="form-control readonly" id="right_image_path_text"  />
+                                                        </div>
+                                                    </div>
+
+
+
+
+
+
+
+                                                    <?php
+                                                    if($assess_has_hording=='Yes')
+                                                    {
+                                                        ?>
+                                                        <div class="row">
+                                                            <div class="col-md-4 col-xs-12 pad-btm" style="margin-left: 15px;">
+                                                                <strong> Hoarding Image </strong>
+                                                            </div>
+                                                            <div class="col-xs-4 pad-btm" style="margin-left: 15px;">
+                                                                <img name="hoarding_image_path_container" id="hoarding_image_path_container" src="<?=base_url();?>/public/assets/img/upload.png" style="width: 80px; height: 80px;" />
+                                                            </div>
+                                                            <div class="col-xs-4 pad-btm" style="margin-left: 15px;">
+                                                                <span id="hoarding_image_path_latitude_span">Latitude: </span>
+                                                                <span id="hoarding_image_path_longitude_span"><br>Longitude: </span>
+                                                                <input type="hidden" name="hoarding_image_path_latitude_text" id="hoarding_image_path_latitude_text" />
+                                                                <input type="hidden" name="hoarding_image_path_longitude_text" id="hoarding_image_path_longitude_text" />
+                                                            </div>
+                                                            <div class="col-md-4 col-xs-9 pad-btm" style="width: 85%;">
+                                                                <input type="file" id="hoarding_image_path" name="hoarding_image_path" class="form-control" direction_type="Hoarding Board" accept="image/*" capture="camera"  style="width:250px;" onChange="readURL1(this, '#hoarding_image_path_container')" />
+                                                                <input type="text" class="form-control readonly" id="hoarding_image_path_text" required  />
+                                                            </div>
+                                                        </div>
+                                                        <?php
+                                                    }
+
+
+                                                    if($assess_has_mobile_tower=='Yes')
+                                                    {
+                                                        ?>
+                                                        <div class="row">
+                                                            <div class="col-md-4 col-xs-12 pad-btm" style="margin-left: 15px;">
+                                                                <strong> Tower Image </strong>
+                                                            </div>
+                                                            <div class="col-xs-4 pad-btm" style="margin-left: 15px;">
+                                                                <img name="tower_image_path_container" id="tower_image_path_container" src="<?=base_url();?>/public/assets/img/upload.png" style="width: 80px; height: 80px;" />
+                                                            </div>
+                                                            <div class="col-xs-4 pad-btm" style="margin-left: 15px;">
+                                                                <span id="tower_image_path_latitude_span">Latitude: </span>
+                                                                <span id="tower_image_path_longitude_span"><br>Longitude: </span>
+                                                                <input type="hidden" name="tower_image_path_latitude_text" id="tower_image_path_latitude_text" />
+                                                                <input type="hidden" name="tower_image_path_longitude_text" id="tower_image_path_longitude_text" />
+                                                            </div>
+                                                            <div class="col-md-4 col-xs-9 pad-btm" style="width: 85%;">
+                                                                <input type="file" id="tower_image_path" name="tower_image_path" class="form-control" direction_type="Mobile Tower" accept="image/*" capture="camera"  style="width:250px;" onChange="readURL1(this, '#tower_image_path_container')" />
+                                                                <input type="text" class="form-control readonly" id="tower_image_path_text" required  />
+                                                            </div>
+                                                        </div>
+                                                        <?php
+                                                    }
+
+                                                    if($assess_is_petrol_pump=='Yes')
+                                                    {
+                                                        ?>
+                                                        <div class="row">
+                                                            <div class="col-md-4 col-xs-12 pad-btm" style="margin-left: 15px;">
+                                                                <strong> Petrol Pump </strong>
+                                                            </div>
+                                                            <div class="col-xs-4 pad-btm" style="margin-left: 15px;">
+                                                                <img name="petrol_pump_image_path_container" id="petrol_pump_image_path_container" src="<?=base_url();?>/public/assets/img/upload.png" style="width: 80px; height: 80px;" />
+                                                            </div>
+                                                            <div class="col-xs-4 pad-btm" style="margin-left: 15px;">
+                                                                <span id="petrol_pump_image_path_latitude_span">Latitude: </span>
+                                                                <span id="petrol_pump_image_path_longitude_span"><br>Longitude: </span>
+                                                                <input type="hidden" name="petrol_pump_image_path_latitude_text" id="petrol_pump_image_path_latitude_text" />
+                                                                <input type="hidden" name="petrol_pump_image_path_longitude_text" id="petrol_pump_image_path_longitude_text" />
+                                                            </div>
+                                                            <div class="col-md-4 col-xs-9 pad-btm" style="width: 85%;">
+                                                                <input type="file" id="petrol_pump_image_path" name="petrol_pump_image_path" class="form-control" direction_type="Petrol Pump" accept="image/*" capture="camera"  style="width:250px;" onChange="readURL1(this, '#petrol_pump_image_path_container')" />
+                                                                <input type="text" class="form-control readonly" id="petrol_pump_image_path_text" required  />
+                                                            </div>
+                                                        </div>
+                                                        <?php
+                                                    }
+
+                                                    if($assess_water_harvesting=='Yes')
+                                                    {
+                                                        ?>
+                                                        <div class="row">
+                                                            <div class="col-md-4 col-xs-12 pad-btm" style="margin-left: 15px;">
+                                                                <strong> Water Harvesting </strong>
+                                                            </div>
+                                                            <div class="col-xs-4 pad-btm" style="margin-left: 15px;">
+                                                                <img name="water_harvesting_image_path_container" id="water_harvesting_image_path_container" src="<?=base_url();?>/public/assets/img/upload.png" style="width: 80px; height: 80px;" />
+                                                            </div>
+                                                            <div class="col-xs-4 pad-btm" style="margin-left: 15px;">
+                                                                <span id="water_harvesting_image_path_latitude_span">Latitude: </span>
+                                                                <span id="water_harvesting_image_path_longitude_span"><br>Longitude: </span>
+                                                                <input type="hidden" name="water_harvesting_image_path_latitude_text" id="water_harvesting_image_path_latitude_text" />
+                                                                <input type="hidden" name="water_harvesting_image_path_longitude_text" id="water_harvesting_image_path_longitude_text" />
+                                                            </div>
+                                                            <div class="col-md-4 col-xs-9 pad-btm" style="width: 85%;">
+                                                                <input type="file" id="water_harvesting_image_path" name="water_harvesting_image_path" class="form-control" direction_type="Water Harvesting" accept="image/*" capture="camera"  style="width:250px;" onChange="readURL1(this, '#water_harvesting_image_path_container')" />
+                                                                <input type="text" class="form-control readonly" id="water_harvesting_image_path_text" required  />
+                                                            </div>
+                                                        </div>
+                                                        <?php
+                                                    }
+                                                    ?>
+<!--                                                    <div class="row text-center">-->
+<!--                                                        <input type="submit" name="submit" value="Save" style="background: #0b6bd3" class="btn btn-primary"/>-->
+<!--                                                    </div>-->
+                                                </div>
+                                                <form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        <?php } ?>
+
+
+		<div class="panel">
+			<div class="panel-body text-center">		
+				<input type="submit" name="back" value="Go Back" id="back" style="width: 120px;background: indianred;"  class="btn btn-success cancel" onClick="chgAction('back')" />
+				<input type="submit" name="Save" id="Save" value="Save & Next" style="width: 100px;background: yellowgreen;" onClick="return saveOrValidate()" class="btn btn-success" />
+				<input type="button" id="Save_id" value="Please Wait..." style="width: 100px; display: none;" class="btn btn-success" />
+			</div>
+		</div>
+		</form>
+	</div>
+</div>
+
+<?=$this->include("layout_mobi/footer");?>
+<script src="<?=base_url();?>/public/assets/js/exif.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/browser-image-compression@1.0.17/dist/browser-image-compression.js"></script>
+
+<script>
+function saveOrValidate() {
+	<?php if ($assess_water_harvesting=="Yes" && $user_type_mstr_id==7) { ?>
+	var errMsg = "";
+	if ($('#water_harvesting_image_path')[0].files.length === 0) {
+		alert("Please capture the image of water harvesting !!!");
+		return false;
+	} else {
+		$("#Save").hide();
+		$("#Save_id").show();
+		return true;
+	}
+    <?php }  ?>
+
+    <?php if ($assess_water_harvesting=="Yes" && $user_type_mstr_id==5) { ?>
+    var errMsg = "";
+    if ($('#water_harvesting_image_path')[0].files.length === 0) {
+        alert("Please capture the image of water harvesting !!!");
+        return false;
+    }
+    <?php }  ?>
+
+    <?php if ($user_type_mstr_id==5) { ?>
+    var errMsg = "";
+    if ($('#right_image_path')[0].files.length === 0) {
+        alert("Please capture the image of right side !!!");
+        return false;
+    } else if($('#front_image_path')[0].files.length === 0){
+        alert("Please capture the image of front side !!!");
+        return false;
+    }
+    else if($('#left_image_path')[0].files.length === 0){
+        alert("Please capture the image of left side !!!");
+        return false;
+    }
+    else if($('#hoarding_image_path')[0].files.length === 0){
+        alert("Please capture the image of hoarding !!!");
+        return false;
+    }
+    else if($('#tower_image_path')[0].files.length === 0){
+        alert("Please capture the image of tower !!!");
+        return false;
+    }
+    else if($('#petrol_pump_image_path')[0].files.length === 0){
+        alert("Please capture the image of petrol pump!!!");
+        return false;
+    }
+    else {
+        $("#Save").hide();
+        $("#Save_id").show();
+        return true;
+    }
+    <?php } ?>
+}
+function readURL(input, target) {
+	if(target=='')
+	{
+		target='#'+input.id+'_container';
+	}
+	console.log(input.id);console.log(input);
+	document.getElementById(input.id + "_latitude_span").innerHTML = "";
+	document.getElementById(input.id + "_longitude_span").innerHTML = "";
+	
+	document.getElementById(input.id + "_latitude_text").value = null;
+	document.getElementById(input.id + "_longitude_text").value = null;
+
+	try
+	{
+		if (input.files && input.files[0]) {
+			var fileName = input.value;
+			var ext = fileName.substring(fileName.lastIndexOf('.') + 1);
+			ext = ext.toLowerCase();
+			if (ext == "jpg" || ext == "jpeg") {
+				//alert(input.files[0].size);
+				var file_size = 5 * 1024 * 1024;
+				if (!(input.files[0].size <= file_size)) 
+				{
+					alert("File size must be upto " + file_size + " MB. ");
+					input.value = "";
+					$(target).attr('src', default_image).height(150);
+					return false;
+				}
+			} else {
+				alert("Upload JPG/JPEG image only.");
+				input.focus();
+				input.value = "";
+				$(target).attr('src', default_image).height(150);
+				return false;
+			}
+			EXIF.getData(input.files[0], function () {
+				var lat = EXIF.getTag(this, "GPSLatitude");
+				var long = EXIF.getTag(this, "GPSLongitude");
+				if (lat != null && long != null) {
+					var lat_ref = EXIF.getTag(this, "GPSLatitudeRef");
+					var x = lat_ref == "S" ? -1 : 1;
+					var latitude = ((lat[0]) + (lat[1] / 60) + (lat[2] / 3600)) * x;
+
+					var long_ref = EXIF.getTag(this, "GPSLongitudeRef");
+					var y = long_ref == "W" ? -1 : 1;
+					var longitude = ((long[0]) + (long[1] / 60) + (long[2] / 3600)) * y;
+					//alert("Latitude : " + latitude + " ----- Longitude : " + longitude);
+					document.getElementById(input.id + "_latitude_span").innerHTML = "Latitude : " + latitude;
+					document.getElementById(input.id + "_longitude_span").innerHTML = "<br>Longitude : " + longitude;
+
+					document.getElementById(input.id + "_latitude_text").value = latitude;
+					document.getElementById(input.id + "_longitude_text").value = longitude;
+					document.getElementById(input.id + "_text").value = latitude + '@' + longitude  ;
+					
+					displayImageInContiner(target, input.id);
+					//compressImage(input);
+					var reader = new FileReader();
+
+					reader.onload = function (e) {
+						$(target)
+							.attr('src', e.target.result)
+							.height(150);
+					};
+
+					reader.readAsDataURL(input.files[0]);
+				}
+				else {
+					alert("Image does not contains GPS Coordinate. Please turn enable geo-tagging in your camera.");
+					input.focus();
+					input.value = "";
+					$(target).attr('src', default_image).height(150);
+					return false;
+				}
+			});
+		}
+		else {
+			$(target).attr('src', default_image).height(150);
+		}
+	}
+	catch (err) {
+		console.log(err);
+		alert(err.message);
+	}
+}
+
+function displayImageInContiner(image_view_id, file_element_name) {
+	file = document.querySelector('input[name="'+file_element_name+'"]').files[0];
+	preview = document.querySelector(image_view_id);
+	
+}
+
+function compressImage (event, useWebWorker=true) 
+{
+	var file = event.files[0];
+	var logDom, progressDom
+	console.log('input', file)
+	imageCompression.getExifOrientation(file).then(function (o) 
+	{
+		console.log('ExifOrientation', o)
+	})
+	var options = {
+		maxSizeMB: parseFloat(1),//mb
+		maxWidthOrHeight: parseFloat(1024), //maxWidthOrHeight px 
+		useWebWorker: useWebWorker,
+	}
+	imageCompression(file, options)
+	.then(function (output) {
+		return output;
+	});
+}
+</script>
+
+<script>
+    $(".readonly").on('keydown paste focus mousedown', function(e){
+        if(e.keyCode != 9) // ignore tab
+            e.preventDefault();
+    });
+    var default_image = '<?=base_url();?>/public/assets/img/upload.png';
+    function readURL1(input, target)
+    {
+        if(target=='')
+        {
+            target='#'+input.id+'_container';
+        }
+        //console.log(input.id);console.log(input);
+        document.getElementById(input.id + "_latitude_span").innerHTML = "";
+        document.getElementById(input.id + "_longitude_span").innerHTML = "";
+
+        document.getElementById(input.id + "_latitude_text").value = null;
+        document.getElementById(input.id + "_longitude_text").value = null;
+
+        try
+        {
+            if (input.files && input.files[0])
+            {
+                var fileName = input.value;
+                var ext = fileName.substring(fileName.lastIndexOf('.') + 1);
+                ext = ext.toLowerCase();
+                if (ext == "jpg" || ext == "jpeg")
+                {
+                    //alert(input.files[0].size);
+                    var file_size = 5 * 1024 * 1024;
+                    if (!(input.files[0].size <= file_size))
+                    {
+                        alert("File size must be upto " + file_size + " MB. ");
+                        input.value = "";
+                        $(target).attr('src', default_image).height(150);
+                        return false;
+                    }
+                }
+                else
+                {
+                    alert("Upload JPG/JPEG image only.");
+                    input.focus();
+                    input.value = "";
+                    $(target).attr('src', default_image).height(150);
+                    return false;
+                }
+                EXIF.getData(input.files[0], function () {
+                    var lat = EXIF.getTag(this, "GPSLatitude");
+                    var long = EXIF.getTag(this, "GPSLongitude");
+                    if (lat != null && long != null) {
+                        var lat_ref = EXIF.getTag(this, "GPSLatitudeRef");
+                        var x = lat_ref == "S" ? -1 : 1;
+                        var latitude = ((lat[0]) + (lat[1] / 60) + (lat[2] / 3600)) * x;
+
+                        var long_ref = EXIF.getTag(this, "GPSLongitudeRef");
+                        var y = long_ref == "W" ? -1 : 1;
+                        var longitude = ((long[0]) + (long[1] / 60) + (long[2] / 3600)) * y;
+                        //alert("Latitude : " + latitude + " ----- Longitude : " + longitude);
+                        document.getElementById(input.id + "_latitude_span").innerHTML = "Latitude : " + latitude;
+                        document.getElementById(input.id + "_longitude_span").innerHTML = "<br>Longitude : " + longitude;
+
+                        document.getElementById(input.id + "_latitude_text").value = latitude;
+                        document.getElementById(input.id + "_longitude_text").value = longitude;
+                        document.getElementById(input.id + "_text").value = latitude + '@' + longitude  ;
+
+                        displayImageInContiner(target, input.id);
+                        compressImage(input);
+                        uploadImage(input);
+                        var reader = new FileReader();
+
+                        reader.onload = function (e) {
+                            $(target)
+                                .attr('src', e.target.result)
+                                .height(150);
+                        };
+
+                        reader.readAsDataURL(input.files[0]);
+                    }
+                    else {
+                        alert("Image does not contains GPS Coordinate. Please turn enable geo-tagging in your camera.");
+                        input.focus();
+                        input.value = "";
+                        $(target).attr('src', default_image).height(150);
+                        return false;
+                    }
+                });
+            }
+            else {
+                $(target).attr('src', default_image).height(150);
+            }
+        }
+        catch (err) {
+            alert(err.message);
+        }
+    }
+
+    function uploadImage(input)
+    {
+        var input_btn_id=input.id;
+        var files = $('#'+ input_btn_id)[0].files;
+
+        var fd = new FormData();
+        fd.append('file', files[0]);
+        fd.append('saf_dtl_id', '<?=$Saf_detail["id"];?>');
+        fd.append('latitude', $("#"+ input_btn_id + "_latitude_text").val());
+        fd.append('longitude', $("#"+ input_btn_id + "_longitude_text").val());
+        fd.append('direction_type', $("#"+ input_btn_id).attr("direction_type"));
+
+        //console.log(input_btn_id);
+        $("#"+input_btn_id+"_text").val("Your image is being uploaded");
+        $.ajax({
+            url: '<?=base_url();?>/SafVerification/uploadGeoTagImg_Ajax',
+            type: 'POST',
+            data: fd,
+            enctype: 'multipart/form-data',
+            contentType:false,
+            cache:false,
+            processData:false,
+            success: function(response){
+                var data = JSON.parse(response);
+                if(data.status==true){
+                    //modelInfo(data.message);
+                    $("#"+input_btn_id+"_text").val(data.message);
+                }
+                else{
+                    modelInfo(data.message);
+                    $("#"+input_btn_id+"_text").val(null);
+                }
+
+            },
+        });
+    }
+
+    function displayImageInContiner(image_view_id, file_element_name)
+    {
+        //read file object and extract image as encoded url
+        //alert(image_view_id);
+        file = document.querySelector('input[name="'+file_element_name+'"]').files[0];
+        preview = document.querySelector(image_view_id);
+
+    }
+
+</script>

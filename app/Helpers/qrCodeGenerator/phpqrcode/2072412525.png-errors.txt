@@ -1,0 +1,1 @@
+2023-07-21 09:19:35: imagepng(D:\Apache24\htdocs\RMCDMC\writable\uploads/qrCodeGenerator/2072412525.png): failed to open stream: No such file or directory

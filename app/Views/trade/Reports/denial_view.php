@@ -1,0 +1,3 @@
+<?php
+?>
+denial_view

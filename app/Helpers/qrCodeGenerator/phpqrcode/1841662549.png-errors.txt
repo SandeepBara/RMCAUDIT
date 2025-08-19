@@ -1,0 +1,1 @@
+2020-09-02 18:14:23: imagepng(qrCodeGenerator/images/1841662549.png): failed to open stream: No such file or directory

@@ -1,0 +1,57 @@
+<bc></bc>
+<bc>Ranchi Municipal Corporation</bc>
+<nc>Citizen Copy</nc>
+<nc>Payment Receipt</nc><br /><n>-----------------------------------------</n><br /><n>Date           :  </n>
+<n>POS ID         :  XXXXXXXXXXX</n>
+<n>TC Name        :  </n>
+<n>Mobile No.		:  </n>
+<n>Holding No.    :  12</n>
+<n>Ward No.	    :  10</n>
+<n>-----------------------------------------</n>
+<n>Transaction No.   :  TRAN17220200803</n>
+<n>Paid  From    	  :  2019-2020</n>
+<n>Paid  Upto    	  :  2020-2021</n>
+<n>Amount Paid   	  :  7770</n>
+<n>Payment Mode  	  :  CASH</n>
+<n>------------------------------------------</n>
+<n>Please keep this Bill For Future Reference</n>
+
+<bc></bc>
+<bc>Ranchi Municipal Corporation</bc>
+<nc>TC Copy</nc>
+<nc>Payment Receipt</nc><br /><n>-----------------------------------------</n><br /><n>Date           :  </n>
+<n>POS ID         :  XXXXXXXXXXX</n>
+<n>TC Name        :  </n>
+<n>Mobile No.		:  </n>
+<n>Holding No.    :  12</n>
+<n>Ward No.	    :  10</n>
+<n>-----------------------------------------</n>
+<n>Transaction No.   :  TRAN17220200803</n>
+<n>Paid  From    	  :  2019-2020</n>
+<n>Paid  Upto    	  :  2020-2021</n>
+<n>Amount Paid   	  :  7770</n>
+<n>Payment Mode  	  :  CASH</n>
+<n>------------------------------------------</n>
+<n>Please keep this Bill For Future Reference</n>
+
+<bc></bc>
+<bc>Ranchi Municipal Corporation</bc>
+<nc>Partner Copy</nc>
+<nc>Payment Receipt</nc><br /><n>-----------------------------------------</n><br /><n>Date           :  </n>
+<n>POS ID         :  XXXXXXXXXXX</n>
+<n>TC Name        :  </n>
+<n>Mobile No.		:  </n>
+<n>Holding No.    :  12</n>
+<n>Ward No.	    :  10</n>
+<n>-----------------------------------------</n>
+<n>Transaction No.   :  TRAN17220200803</n>
+<n>Paid  From    	  :  2019-2020</n>
+<n>Paid  Upto    	  :  2020-2021</n>
+<n>Amount Paid   	  :  7770</n>
+<n>Payment Mode  	  :  CASH</n>
+<n>------------------------------------------</n>
+<n>Please keep this Bill For Future Reference</n>
+
+
+
+

@@ -1,0 +1,1 @@
+2020-09-26 17:16:15: imagepng(images/5f6f2a0718f7a.png): failed to open stream: No such file or directory

@@ -1,0 +1,169 @@
+<?= $this->include('layout_vertical/header');?>
+
+
+<!--CONTENT CONTAINER-->
+            <!--===================================================-->
+            <div id="content-container">
+                <div id="page-head">
+                    <!--Page Title-->
+                    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                    <div id="page-title">
+                        <!--<h1 class="page-header text-overflow">Designation List</h1>//-->
+                    </div>
+                    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                    <!--End page title-->
+                    <!--Breadcrumb-->
+                    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                    <ol class="breadcrumb">
+					<li><a href="#"><i class="demo-pli-home"></i></a></li>
+					<li><a href="#">Water </a></li>
+					<li class="active"><?=(isset($user_type_nm)?preg_replace('/water/i', ' ', $user_type_nm,1):'Dealing Assistant ').' Inbox';?></li>
+                    </ol>
+                    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                    <!--End breadcrumb-->
+                </div>
+                <!--Page content-->
+                <!--===================================================-->
+                <div id="page-content">
+					<div class="panel panel-bordered panel-dark">
+						<div class="panel-heading">
+							<h5 class="panel-title">Search</h5>
+						</div>
+						<div class="panel-body">	
+
+							<form action="<?php echo base_url('water_da/index');?>" method="post" role="form" class="php-email-form" id="myform">
+																
+								<div class="panel-body">
+									<div class="row">
+										<div class="col-md-6"></div>
+										<div class="col-md-6">
+											<div class="radio">
+												<input type="radio" id="by_holding_dtl" class="magic-radio" name="by_holding_owner_dtl" value="by_application_no" checked onchange="$('#keyword_change_id').attr('data-original-title', 'Enter Application No ');" <?=isset($by_holding_owner_dtl) && $by_holding_owner_dtl=='checked'?'selected':''?>>
+												<label for="by_holding_dtl">By Application No.</label>
+
+												<input type="radio" id="by_owner_dtl" class="magic-radio" name="by_holding_owner_dtl" value="by_owner"  onchange="$('#keyword_change_id').attr('data-original-title', 'Enter Register Mobile No. Or Owner Name Or Father Name');" <?=isset($by_holding_owner_dtl) && $by_holding_owner_dtl=='by_owner'?'checked':''?>>
+												<label for="by_owner_dtl">By Owner Details</label>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<label class="col-md-1">Ward No.</label>
+										<div class="col-md-3">
+											<div class="form-group">
+											<select id="ward_mstr_id" name="ward_mstr_id" class="form-control m-t-xxs">
+												<option value="All">ALL</option> 
+												<?php foreach($wardList as $value):?>
+												<option value="<?=$value['ward_mstr_id']?>" <?=(isset($ward_mstr_id))?$ward_mstr_id==$value["ward_mstr_id"]?"SELECTED":"":"";?>><?=$value['ward_no'];?>
+												</option>
+												<?php endforeach;?>
+											</select>																</select>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<label for="keyword">
+												Enter Keywords
+												<i id="keyword_change_id" class="fa fa-info-circle" data-placement="bottom" data-toggle="tooltip" title="Enter Application No"></i>
+											</label>
+										</div>
+										<div class="col-md-3">
+											<div class="form-group">
+												<input type="text" id="keyword" name="keyword" class="form-control" style="height:38px;" placeholder="Enter Keywords" value="<?=isset($keyword)?$keyword:'';?>">
+
+											</div>
+										</div>
+										<div class="col-md-3">
+											<button class="btn btn-success btn-block" id="btn_search" name="btn_search" type="submit">Search</button>
+										</div>
+									</div>
+								</div>								
+							</form>
+						</div>
+					</div>
+					<div class="panel panel-bordered panel-dark">
+						<div class="panel-heading">
+							<h3 class="panel-title">List</h3>
+						</div>
+
+						<div class="panel-body">
+							<div class="row">
+								<div class="table-responsive">
+									<table id="demo_dt_basic" class="table table-striped table-bordered" cellspacing="0" width="100%">
+										<thead class="bg-trans-dark text-dark">
+											<tr>
+												<th>#</th>
+												<th>Ward No.</th>
+												<th>Application No.</th>
+												<th>Owner Name</th>
+												<th>Guardian Name</th>
+												<th>Mobile No.</th>
+												<th>Connection Type</th>
+												<th>Action</th>
+											</tr>
+										</thead>
+										<tbody>
+		                                    <?php
+											if(isset($posts["result"]))
+											foreach($posts["result"] as $value)
+											{
+												?>
+												<tr>
+												<td><?=++$posts['offset'];?></td>
+													<td><?=$value["ward_no"];?></td>
+													<td><?=$value["application_no"];?></td>
+													<td><?=$value["applicant_name"];?></td>
+													<td><?=$value["father_name"];?></td>
+													<td><?=$value["mobile_no"];?></td>
+													<td><?=$value["connection_type"];?></td>
+													<td>
+														<?php
+														if($user_type ==12 )//D.A
+														{
+															?>
+																<a class="btn btn-primary" href="<?php echo base_url('water_da/view/'.$value['id']);?>" >View</a>
+															<?php
+														}
+														elseif($user_type ==14)//S.H
+														{
+															?>
+																<a class="btn btn-primary" href="<?php echo base_url('Water_SH/view/'.md5($value['id']));?>" role="button">View</a>
+															<?php
+														}
+														elseif($user_type ==15)//A.E
+														{
+															?>
+															 <a class="btn btn-primary" href="<?php echo base_url('Water_AE/view/'.md5($value['id']));?>" role="button">View</a>
+															<?php
+														}
+
+														elseif($user_type ==16)//E.O
+														{
+															?>
+															 <a class="btn btn-primary" href="<?php echo base_url('Water_EO/view/'.md5($value['id']));?>" role="button">View</a>
+															 <!-- <a class="btn btn-primary" href="<?php echo base_url('Water_AE/view/'.md5($value['id']));?>" role="button">View</a> -->
+															<?php
+														}
+														?>
+														
+													</td>
+												</tr>
+												<?php
+											}
+											?>
+										</tbody>
+									</table>
+								</div>
+								<?=isset($posts['count'])?pagination($posts['count']):null;?>
+							</div>
+						</div>
+				</div>
+			
+                <!--===================================================-->
+                <!--End page content-->
+
+            </div>
+            <!--===================================================-->
+            <!--END CONTENT CONTAINER-->
+
+
+<
+<?= $this->include('layout_vertical/footer');?>
